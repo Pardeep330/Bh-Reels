@@ -21,19 +21,43 @@ export const PublicNavbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
 
-  useEffect(() => {
-    const savedUser = localStorage.getItem("bh_public_user");
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (e) {}
+  const syncUser = () => {
+    try {
+      const publicUser = localStorage.getItem("bh_public_user");
+      const authUser = localStorage.getItem("bh_auth_user");
+
+      if (publicUser) {
+        setUser(JSON.parse(publicUser));
+      } else if (authUser) {
+        setUser(JSON.parse(authUser));
+      } else {
+        setUser(null);
+      }
+    } catch (e) {
+      setUser(null);
     }
-  }, []);
+  };
+
+  useEffect(() => {
+    syncUser();
+
+    // Listen for real-time login/logout events and cross-tab storage changes
+    const handleAuthChange = () => syncUser();
+    window.addEventListener("bh_auth_change", handleAuthChange);
+    window.addEventListener("storage", handleAuthChange);
+
+    return () => {
+      window.removeEventListener("bh_auth_change", handleAuthChange);
+      window.removeEventListener("storage", handleAuthChange);
+    };
+  }, [pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem("bh_public_user");
+    localStorage.removeItem("bh_auth_user");
+    localStorage.removeItem("bh_auth_token");
+    window.dispatchEvent(new Event("bh_auth_change"));
     setUser(null);
-    window.location.href = "/";
   };
 
   const navLinks = [

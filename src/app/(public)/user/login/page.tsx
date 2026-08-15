@@ -90,6 +90,7 @@ export default function UserLoginPage() {
 
         localStorage.setItem("bh_auth_token", data.token);
         localStorage.setItem("bh_auth_user", JSON.stringify(data.admin));
+        window.dispatchEvent(new Event("bh_auth_change"));
 
         // Redirect to Admin Portal
         router.push("/admin/dashboard");
@@ -101,6 +102,7 @@ export default function UserLoginPage() {
           avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300",
         };
         localStorage.setItem("bh_public_user", JSON.stringify(mockUser));
+        window.dispatchEvent(new Event("bh_auth_change"));
         router.push("/select-influencers");
       }
     } catch (err: any) {

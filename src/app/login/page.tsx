@@ -92,6 +92,7 @@ export default function LoginPage() {
 
       localStorage.setItem("bh_auth_token", token);
       localStorage.setItem("bh_auth_user", JSON.stringify(adminUser));
+      window.dispatchEvent(new Event("bh_auth_change"));
       router.push("/admin/dashboard");
     } catch (err: any) {
       // Direct session fallback for smooth demo testing
@@ -104,6 +105,7 @@ export default function LoginPage() {
       };
       localStorage.setItem("bh_auth_token", "demo-admin-session-token");
       localStorage.setItem("bh_auth_user", JSON.stringify(defaultAdmin));
+      window.dispatchEvent(new Event("bh_auth_change"));
       router.push("/admin/dashboard");
     } finally {
       setLoading(false);
