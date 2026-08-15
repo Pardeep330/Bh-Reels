@@ -32,7 +32,7 @@ export default function PaymentReviewPage() {
   const [payments, setPayments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [activeTab, setActiveTab] = useState<"pending" | "all">("pending");
+  const [activeTab, setActiveTab] = useState<"pending" | "accepted" | "rejected" | "all">("pending");
 
   // Modals state
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -55,7 +55,7 @@ export default function PaymentReviewPage() {
       });
       if (res.ok) {
         const d = await res.json();
-        setPayments(d.pendingCampaigns || d.allPayments || []);
+        setPayments(d.allPayments || d.pendingCampaigns || []);
       }
     } catch (e) {
       console.error(e);
@@ -74,7 +74,7 @@ export default function PaymentReviewPage() {
 
       if (res.ok) {
         setShowDetailsModal(false);
-        setToastMsg("Payment approved successfully! Campaign is now active.");
+        setToastMsg("Payment approved successfully! Request moved to Accepted tab.");
         setTimeout(() => setToastMsg(""), 4000);
         fetchPayments();
       }
@@ -101,7 +101,7 @@ export default function PaymentReviewPage() {
         setShowRejectModal(false);
         setShowDetailsModal(false);
         setRejectionReason("");
-        setToastMsg("Payment rejected.");
+        setToastMsg("Payment rejected and moved to Rejected tab.");
         setTimeout(() => setToastMsg(""), 4000);
         fetchPayments();
       }
@@ -125,7 +125,19 @@ export default function PaymentReviewPage() {
   };
 
   const pendingPayments = payments.filter((p) => p.paymentStatus === "pending_verification");
-  const displayPayments = (activeTab === "pending" ? pendingPayments : payments).filter(
+  const acceptedPayments = payments.filter((p) => p.paymentStatus === "approved");
+  const rejectedPayments = payments.filter((p) => p.paymentStatus === "rejected");
+
+  const tabList =
+    activeTab === "pending"
+      ? pendingPayments
+      : activeTab === "accepted"
+      ? acceptedPayments
+      : activeTab === "rejected"
+      ? rejectedPayments
+      : payments;
+
+  const displayPayments = tabList.filter(
     (p) =>
       p.title?.toLowerCase().includes(search.toLowerCase()) ||
       p.clientName?.toLowerCase().includes(search.toLowerCase()) ||
@@ -148,12 +160,12 @@ export default function PaymentReviewPage() {
       )}
 
       {/* Control Bar: Search & Tabs */}
-      <div className="glass-panel p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="relative w-full md:w-96">
+      <div className="glass-panel p-6 rounded-2xl flex flex-col lg:flex-row items-center justify-between gap-4">
+        <div className="relative w-full lg:w-80">
           <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search by campaign, producer or UTR number..."
+            placeholder="Search by campaign, producer or UTR..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#D4AF37]"
@@ -161,23 +173,45 @@ export default function PaymentReviewPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex items-center gap-2 bg-[#131622] p-1.5 rounded-xl border border-[#D4AF37]/20">
+        <div className="flex flex-wrap items-center gap-1.5 bg-[#131622] p-1.5 rounded-xl border border-[#D4AF37]/20">
           <button
             onClick={() => setActiveTab("pending")}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
               activeTab === "pending"
                 ? "bg-[#D4AF37] text-black shadow-gold-sm"
                 : "text-gray-300 hover:text-white"
             }`}
           >
             <Clock className="w-3.5 h-3.5" />
-            <span>Pending Review ({pendingPayments.length})</span>
+            <span>Pending ({pendingPayments.length})</span>
+          </button>
+          <button
+            onClick={() => setActiveTab("accepted")}
+            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+              activeTab === "accepted"
+                ? "bg-emerald-500 text-black shadow-md"
+                : "text-gray-300 hover:text-white"
+            }`}
+          >
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            <span>Accepted ({acceptedPayments.length})</span>
+          </button>
+          <button
+            onClick={() => setActiveTab("rejected")}
+            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+              activeTab === "rejected"
+                ? "bg-red-500 text-white shadow-md"
+                : "text-gray-300 hover:text-white"
+            }`}
+          >
+            <XCircle className="w-3.5 h-3.5" />
+            <span>Rejected ({rejectedPayments.length})</span>
           </button>
           <button
             onClick={() => setActiveTab("all")}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${
               activeTab === "all"
-                ? "bg-[#D4AF37] text-black shadow-gold-sm"
+                ? "bg-[#181B2B] text-[#D4AF37] border border-[#D4AF37]/40 shadow-gold-sm"
                 : "text-gray-300 hover:text-white"
             }`}
           >
