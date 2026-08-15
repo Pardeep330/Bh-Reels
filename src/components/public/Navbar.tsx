@@ -40,6 +40,7 @@ export const PublicNavbar: React.FC = () => {
     { name: "Home", href: "/" },
     { name: "Influencers", href: "/influencers" },
     { name: "Price Estimator", href: "/select-influencers", badge: "Engine" },
+    ...(user ? [{ name: "My Campaigns", href: "/user/profile", badge: "Portal" }] : []),
     { name: "About Us", href: "/about" },
     { name: "Contact Us", href: "/contact" },
   ];

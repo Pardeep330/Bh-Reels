@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import {
   Video,
@@ -17,26 +17,73 @@ import {
   Zap,
   HelpCircle,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Star,
   Film,
   Music,
   Lock,
+  BarChart3,
+  Megaphone,
+  Clock,
+  Youtube,
+  Play,
 } from "lucide-react";
 
 export default function HomePage() {
   const [influencers, setInfluencers] = useState<any[]>([]);
+  const [campaigns, setCampaigns] = useState<any[]>([]);
+  const [ads, setAds] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const adsScrollRef = useRef<HTMLDivElement>(null);
+  const campaignsScrollRef = useRef<HTMLDivElement>(null);
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  // Auto-advance banner slider
+  useEffect(() => {
+    if (ads.length <= 1) return;
+    const timer = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % ads.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [ads.length]);
 
   // Producer Calculator Selection State
   const [selectedIds, setSelectedIds] = useState<string[]>(["inf-1", "inf-2"]);
 
   useEffect(() => {
+    // Fetch influencers
     fetch("/api/admin/influencers")
       .then((r) => r.json())
       .then((d) => setInfluencers(d.influencers || []))
       .catch(console.error);
+
+    // Fetch public campaigns
+    fetch("/api/public/campaigns?limit=6")
+      .then((r) => r.json())
+      .then((d) => setCampaigns(d.campaigns || []))
+      .catch(console.error);
+
+    // Fetch Masuri Ads
+    fetch("/api/public/ads")
+      .then((r) => r.json())
+      .then((d) => setAds(d.ads || []))
+      .catch(console.error);
+
+    // Fetch live stats
+    fetch("/api/public/stats")
+      .then((r) => r.json())
+      .then((d) => setStats(d.stats || null))
+      .catch(console.error);
   }, []);
+
+  const scrollAds = (dir: "left" | "right") => {
+    if (adsScrollRef.current) {
+      adsScrollRef.current.scrollBy({ left: dir === "right" ? 340 : -340, behavior: "smooth" });
+    }
+  };
 
   const formatCurrency = (val: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -136,6 +183,135 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* ── MASURI HERO BANNER SLIDER (top of page) ─────────────────── */}
+      {ads.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mb-12">
+          <div className="relative w-full rounded-3xl overflow-hidden bg-[#0E1017] border border-[#D4AF37]/30 shadow-2xl h-[220px] sm:h-[250px] md:h-[270px]">
+            {/* Slides */}
+            {ads.map((ad, idx) => (
+              <div
+                key={ad.id}
+                className={`absolute inset-0 transition-all duration-700 ease-in-out ${idx === activeSlide ? "opacity-100 scale-100 z-10" : "opacity-0 scale-[0.98] z-0 pointer-events-none"
+                  }`}
+              >
+                {/* Ambient Blurred Background from Poster */}
+                {ad.posterUrl && (
+                  <div
+                    className="absolute inset-0 bg-cover bg-center blur-2xl opacity-20 scale-110 pointer-events-none"
+                    style={{ backgroundImage: `url('${ad.posterUrl}')` }}
+                  />
+                )}
+
+                {/* Subtle Geometric Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0B0D14] via-[#0E1017]/90 to-transparent z-0" />
+
+                {/* Grid Layout: Left Content & Right Poster Frame */}
+                <div className="relative z-10 h-full flex items-center justify-between p-5 sm:p-7 md:p-9 gap-4 sm:gap-8">
+                  {/* Left Side: Info & Action Buttons */}
+                  <div className="max-w-xl flex flex-col justify-center space-y-2 sm:space-y-3">
+                    <div className="inline-flex items-center gap-1.5 w-fit px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 text-[10px] sm:text-xs font-extrabold text-[#D4AF37] tracking-wider uppercase">
+                      <Sparkles className="w-3 h-3 text-[#D4AF37]" /> Featured Spotlight
+                    </div>
+
+                    <h2 className="text-lg sm:text-2xl md:text-3xl font-black text-white leading-tight line-clamp-1">
+                      {ad.title}
+                    </h2>
+
+                    {ad.description && (
+                      <p className="text-xs sm:text-sm text-gray-300 line-clamp-1 sm:line-clamp-2 leading-relaxed">
+                        {ad.description}
+                      </p>
+                    )}
+
+                    {/* CTA Action Buttons */}
+                    <div className="flex flex-wrap items-center gap-2.5 pt-1">
+                      <a
+                        href={ad.youtubeUrl || "#"}
+                        target={ad.youtubeUrl ? "_blank" : undefined}
+                        rel="noreferrer"
+                        onClick={!ad.youtubeUrl ? (e) => e.preventDefault() : undefined}
+                        className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs shadow-md hover:shadow-red-600/30 transition-all active:scale-95"
+                      >
+                        <Youtube className="w-4 h-4" />
+                        <span>YouTube</span>
+                      </a>
+                      <a
+                        href={ad.spotifyUrl || "#"}
+                        target={ad.spotifyUrl ? "_blank" : undefined}
+                        rel="noreferrer"
+                        onClick={!ad.spotifyUrl ? (e) => e.preventDefault() : undefined}
+                        className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-[#1DB954] hover:bg-[#1ed760] text-black font-bold text-xs shadow-md hover:shadow-[#1DB954]/30 transition-all active:scale-95"
+                      >
+                        <Music className="w-4 h-4" />
+                        <span>Spotify</span>
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Right Side: Crisp Fitted Artwork/Poster */}
+                  <div className="hidden sm:flex shrink-0 h-full py-1 items-center">
+                    <div className="relative h-full aspect-[16/9] rounded-2xl overflow-hidden border border-[#D4AF37]/30 shadow-2xl bg-[#131622]">
+                      {ad.posterUrl ? (
+                        <img
+                          src={ad.posterUrl}
+                          alt={ad.title}
+                          className="w-full h-full object-cover object-center"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = "none";
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#181B2B] to-[#0E1017]">
+                          <Film className="w-10 h-10 text-[#D4AF37]/30" />
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* Left Nav Arrow */}
+            {ads.length > 1 && (
+              <>
+                <button
+                  onClick={() => setActiveSlide((prev) => (prev - 1 + ads.length) % ads.length)}
+                  className="absolute left-2.5 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-black/90 hover:border-[#D4AF37] transition-all"
+                  aria-label="Previous Slide"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+
+                {/* Right Nav Arrow */}
+                <button
+                  onClick={() => setActiveSlide((prev) => (prev + 1) % ads.length)}
+                  className="absolute right-2.5 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-black/90 hover:border-[#D4AF37] transition-all"
+                  aria-label="Next Slide"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+
+                {/* Dot indicators */}
+                <div className="absolute bottom-3 right-4 sm:right-6 z-20 flex items-center gap-1.5 bg-black/40 px-2.5 py-1 rounded-full backdrop-blur-sm border border-white/10">
+                  {ads.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveSlide(i)}
+                      className={`rounded-full transition-all duration-300 ${i === activeSlide
+                        ? "w-5 h-1.5 bg-[#D4AF37]"
+                        : "w-1.5 h-1.5 bg-white/40 hover:bg-white/80"
+                        }`}
+                      aria-label={`Go to slide ${i + 1}`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </section>
+      )}
+
       {/* SECTION 2: Hero Section */}
       <section className="relative pt-10 pb-16 px-4 sm:px-6 lg:px-8 text-center max-w-6xl mx-auto">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-gold-radial opacity-35 pointer-events-none rounded-full blur-3xl" />
@@ -172,29 +348,44 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 3: Live Real-Time Network Counter Ticker */}
+      {/* SECTION 3: Live Real-Time Network Stats (Dynamic) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-8 rounded-3xl bg-[#0E1017]/90 border border-[#D4AF37]/30 shadow-2xl backdrop-blur-md text-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 sm:p-8 rounded-3xl bg-[#0E1017]/90 border border-[#D4AF37]/30 shadow-2xl backdrop-blur-md text-center">
           <div className="space-y-1">
-            <div className="text-3xl sm:text-4xl font-black text-white">3.6M+</div>
+            <div className="text-3xl sm:text-4xl font-black text-white">
+              {stats ? (
+                stats.totalReach >= 1000000
+                  ? (stats.totalReach / 1000000).toFixed(1) + "M+"
+                  : stats.totalReach >= 1000
+                    ? Math.floor(stats.totalReach / 1000) + "K+"
+                    : stats.totalReach + "+"
+              ) : "—"}
+            </div>
             <div className="text-xs text-gray-400 font-semibold">Combined Audience Reach</div>
           </div>
           <div className="space-y-1">
-            <div className="text-3xl sm:text-4xl font-black text-gold-gradient">250+</div>
-            <div className="text-xs text-gray-400 font-semibold">Viral Reels Delivered</div>
+            <div className="text-3xl sm:text-4xl font-black text-gold-gradient">
+              {stats ? (stats.totalReelsDelivered > 0 ? stats.totalReelsDelivered + "+" : stats.totalReelsOrdered + "+") : "—"}
+            </div>
+            <div className="text-xs text-gray-400 font-semibold">Reels Ordered</div>
           </div>
           <div className="space-y-1">
-            <div className="text-3xl sm:text-4xl font-black text-white">50+</div>
-            <div className="text-xs text-gray-400 font-semibold">Top Verified Creators</div>
+            <div className="text-3xl sm:text-4xl font-black text-white">
+              {stats ? stats.activeInfluencers + "+" : "—"}
+            </div>
+            <div className="text-xs text-gray-400 font-semibold">Verified Active Creators</div>
           </div>
           <div className="space-y-1">
-            <div className="text-3xl sm:text-4xl font-black text-emerald-400">100%</div>
-            <div className="text-xs text-gray-400 font-semibold">Verified UTR Payments</div>
+            <div className="text-3xl sm:text-4xl font-black text-emerald-400">
+              {stats ? stats.totalCampaigns + "+" : "—"}
+            </div>
+            <div className="text-xs text-gray-400 font-semibold">Campaigns Completed</div>
           </div>
         </div>
       </section>
 
-      {/* SECTION 4: Brand & Production Houses Marquee Trust Bar */}
+
+      {/* SECTION 5: Brand & Production Houses Marquee Trust Bar */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 text-center">
         <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">
           Trusted By Leading Film Studios & Labels
@@ -224,11 +415,10 @@ export default function HomePage() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
-                selectedCategory === cat
-                  ? "bg-[#D4AF37] text-black shadow-gold-md"
-                  : "bg-[#131622] border border-[#D4AF37]/20 text-gray-300 hover:border-[#D4AF37]"
-              }`}
+              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${selectedCategory === cat
+                ? "bg-[#D4AF37] text-black shadow-gold-md"
+                : "bg-[#131622] border border-[#D4AF37]/20 text-gray-300 hover:border-[#D4AF37]"
+                }`}
             >
               {cat}
             </button>
@@ -260,9 +450,8 @@ export default function HomePage() {
             return (
               <div
                 key={inf.id}
-                className={`glass-panel glass-panel-hover p-6 rounded-3xl space-y-5 flex flex-col justify-between transition-all ${
-                  isSelected ? "border-2 border-[#D4AF37] bg-[#181B2B]/90" : "border border-[#D4AF37]/20"
-                }`}
+                className={`glass-panel glass-panel-hover p-6 rounded-3xl space-y-5 flex flex-col justify-between transition-all ${isSelected ? "border-2 border-[#D4AF37] bg-[#181B2B]/90" : "border border-[#D4AF37]/20"
+                  }`}
               >
                 {/* Header Info */}
                 <div className="flex items-start justify-between">
@@ -311,11 +500,10 @@ export default function HomePage() {
 
                   <button
                     onClick={() => toggleSelectCreator(inf.id)}
-                    className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all ${
-                      isSelected
-                        ? "bg-emerald-500 text-black shadow-md"
-                        : "bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black shadow-gold-sm hover:brightness-110"
-                    }`}
+                    className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all ${isSelected
+                      ? "bg-emerald-500 text-black shadow-md"
+                      : "bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black shadow-gold-sm hover:brightness-110"
+                      }`}
                   >
                     {isSelected ? "Selected ✓" : "Add to Package"}
                   </button>
@@ -416,58 +604,145 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 9: Movie & Music Campaign Case Studies Showcase */}
+      {/* SECTION 9: Live Campaigns Showcase (Dynamic from DB) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="text-center space-y-2">
-          <h2 className="text-2xl sm:text-3xl font-black text-white flex items-center justify-center gap-2">
-            <Film className="w-6 h-6 text-[#D4AF37]" /> Successful Campaign Case Studies
-          </h2>
-          <p className="text-xs text-gray-400">Recent viral reels engineered for film releases & album launches</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="glass-panel p-6 rounded-3xl space-y-4">
-            <span className="px-2.5 py-1 rounded bg-[#1E2230] text-[10px] font-bold text-[#D4AF37] uppercase">
-              Film Release
-            </span>
-            <h3 className="text-lg font-bold text-white">Diwali Blockbuster Launch</h3>
-            <p className="text-xs text-gray-400">
-              6 Top Fashion & Entertainment creators posted coordinated ethnic reels generating over 4.2 Million views in 72 hours.
-            </p>
-            <div className="pt-2 flex justify-between text-xs text-[#D4AF37] font-bold border-t border-gray-800">
-              <span>Status: Completed</span>
-              <span>4.2M Reach</span>
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#131622] border border-[#D4AF37]/30 text-[10px] font-bold text-[#D4AF37]">
+              <Megaphone className="w-3 h-3" /> LIVE CAMPAIGNS
             </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-white flex items-center gap-2">
+              <Film className="w-6 h-6 text-[#D4AF37]" /> Active &amp; Recent Campaigns
+            </h2>
+            <p className="text-xs text-gray-400">Real campaigns running on our network — live from the database</p>
           </div>
 
-          <div className="glass-panel p-6 rounded-3xl space-y-4">
-            <span className="px-2.5 py-1 rounded bg-[#1E2230] text-[10px] font-bold text-[#D4AF37] uppercase">
-              Audio Trend
-            </span>
-            <h3 className="text-lg font-bold text-white">Viral Audio Track Challenge</h3>
-            <p className="text-xs text-gray-400">
-              Assigned 4 comedy skit creators to launch dance trend reels on new movie title song, driving 15,000+ user reels.
-            </p>
-            <div className="pt-2 flex justify-between text-xs text-[#D4AF37] font-bold border-t border-gray-800">
-              <span>Status: Active</span>
-              <span>2.8M Reach</span>
-            </div>
-          </div>
-
-          <div className="glass-panel p-6 rounded-3xl space-y-4">
-            <span className="px-2.5 py-1 rounded bg-[#1E2230] text-[10px] font-bold text-[#D4AF37] uppercase">
-              Brand Launch
-            </span>
-            <h3 className="text-lg font-bold text-white">NextGen Tech Smartphone</h3>
-            <p className="text-xs text-gray-400">
-              Tech reviewer unboxing reels showcasing 4K camera quality, resulting in 800+ pre-orders.
-            </p>
-            <div className="pt-2 flex justify-between text-xs text-[#D4AF37] font-bold border-t border-gray-800">
-              <span>Status: Active</span>
-              <span>1.5M Reach</span>
+          <div className="flex items-center gap-3">
+            {/* Scroll Controls */}
+            <div className="flex items-center gap-2 ml-2">
+              <button
+                onClick={() => campaignsScrollRef.current?.scrollBy({ left: -360, behavior: "smooth" })}
+                className="w-9 h-9 rounded-xl bg-[#131622] border border-[#D4AF37]/30 flex items-center justify-center text-gray-300 hover:text-[#D4AF37] hover:border-[#D4AF37] transition-all"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => campaignsScrollRef.current?.scrollBy({ left: 360, behavior: "smooth" })}
+                className="w-9 h-9 rounded-xl bg-[#131622] border border-[#D4AF37]/30 flex items-center justify-center text-gray-300 hover:text-[#D4AF37] hover:border-[#D4AF37] transition-all"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>
+
+        {/* Horizontal Scroller */}
+        <div
+          ref={campaignsScrollRef}
+          className="flex gap-6 overflow-x-auto scrollbar-none pb-4 pt-1"
+          style={{ scrollSnapType: "x mandatory" }}
+        >
+          {(campaigns.length === 0
+            ? [
+              { id: "f1", targetCategory: "Film Release", title: "Diwali Blockbuster Launch", description: "6 Top Fashion & Entertainment creators posted coordinated ethnic reels generating over 4.2M views in 72 hours.", status: "completed", posterUrl: "", youtubeUrl: "", spotifyUrl: "" },
+              { id: "f2", targetCategory: "Audio Trend", title: "Viral Audio Track Challenge", description: "4 comedy skit creators launched dance trend reels on a new movie title song, driving 15K+ user reels.", status: "active", posterUrl: "", youtubeUrl: "", spotifyUrl: "" },
+              { id: "f3", targetCategory: "Brand Launch", title: "NextGen Tech Smartphone", description: "Tech reviewer unboxing reels showcasing 4K camera quality, resulting in 800+ pre-orders.", status: "active", posterUrl: "", youtubeUrl: "", spotifyUrl: "" },
+            ]
+            : campaigns
+          ).map((cmp: any) => (
+            <div
+              key={cmp.id}
+              className="shrink-0 w-[300px] sm:w-[340px] glass-panel rounded-3xl overflow-hidden border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-300 flex flex-col group"
+              style={{ scrollSnapAlign: "start" }}
+            >
+              {/* Poster / Banner */}
+              <div className="relative h-44 overflow-hidden bg-gradient-to-br from-[#181B2B] via-[#1E2230] to-[#0E1017] flex items-center justify-center">
+                {cmp.posterUrl ? (
+                  <img
+                    src={cmp.posterUrl}
+                    alt={cmp.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                  />
+                ) : (
+                  <div className="flex flex-col items-center gap-2 opacity-20">
+                    <Film className="w-12 h-12 text-[#D4AF37]" />
+                    <span className="text-[10px] text-gray-500 font-semibold uppercase tracking-widest">Campaign</span>
+                  </div>
+                )}
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0B0D14] via-[#0B0D14]/30 to-transparent" />
+
+                {/* Play button overlay if YouTube exists */}
+                {cmp.youtubeUrl && (
+                  <a
+                    href={cmp.youtubeUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="absolute inset-0 flex items-center justify-center group/play"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-red-600/90 flex items-center justify-center shadow-lg group-hover/play:scale-110 transition-transform">
+                      <Play className="w-5 h-5 text-white fill-white ml-0.5" />
+                    </div>
+                  </a>
+                )}
+
+                {/* Status pill — top right */}
+                <div className={`absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold backdrop-blur-sm border ${cmp.status === "active"
+                  ? "bg-emerald-950/80 border-emerald-500/40 text-emerald-400"
+                  : "bg-[#1E2230]/80 border-gray-700/40 text-gray-400"
+                  }`}>
+                  {cmp.status === "active" && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />}
+                  {cmp.status === "active" ? "Live Now" : "Completed"}
+                </div>
+
+
+              </div>
+
+              {/* Card Body */}
+              <div className="p-5 flex flex-col gap-3 flex-1">
+                {/* Title & Description */}
+                <div className="flex-1">
+                  <h3 className="font-extrabold text-white text-sm leading-snug line-clamp-2">
+                    {cmp.title}
+                  </h3>
+                  {cmp.description && (
+                    <p className="text-[11px] text-gray-400 mt-1.5 line-clamp-2 leading-relaxed">
+                      {cmp.description}
+                    </p>
+                  )}
+                </div>
+
+                {/* YouTube + Spotify links — always shown */}
+                <div className="flex items-center gap-2 pt-2 border-t border-[#D4AF37]/10">
+                  <a
+                    href={cmp.youtubeUrl || "#"}
+                    target={cmp.youtubeUrl ? "_blank" : undefined}
+                    rel="noreferrer"
+                    onClick={!cmp.youtubeUrl ? (e) => e.preventDefault() : undefined}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-[11px] transition-all hover:shadow-lg"
+                  >
+                    <Youtube className="w-3.5 h-3.5" />
+                    YouTube
+                  </a>
+                  <a
+                    href={cmp.spotifyUrl || "#"}
+                    target={cmp.spotifyUrl ? "_blank" : undefined}
+                    rel="noreferrer"
+                    onClick={!cmp.spotifyUrl ? (e) => e.preventDefault() : undefined}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[#1DB954] hover:bg-[#1ed760] text-black font-bold text-[11px] transition-all hover:shadow-lg"
+                  >
+                    <Music className="w-3.5 h-3.5" />
+                    Spotify
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom CTA */}
       </section>
 
       {/* SECTION 10: Producer & Creator Testimonials */}

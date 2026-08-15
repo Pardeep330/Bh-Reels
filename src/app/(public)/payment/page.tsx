@@ -15,15 +15,18 @@ import {
   Sparkles,
   Upload,
   Lock,
+  Loader2,
+  Image as ImageIcon,
+  X,
+  Eye,
 } from "lucide-react";
 
 export default function PaymentPage() {
   const router = useRouter();
   const [bookingDraft, setBookingDraft] = useState<any>(null);
   const [utrNumber, setUtrNumber] = useState("");
-  const [screenshotUrl, setScreenshotUrl] = useState(
-    "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=400"
-  );
+  const [screenshotUrl, setScreenshotUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [copiedUpi, setCopiedUpi] = useState(false);
@@ -46,6 +49,41 @@ export default function PaymentPage() {
     setTimeout(() => setCopiedUpi(false), 2000);
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Max 10MB check
+    if (file.size > 10 * 1024 * 1024) {
+      setError("File size exceeds 10MB. Please select a smaller screenshot.");
+      return;
+    }
+
+    setUploading(true);
+    setError("");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to upload image");
+      }
+
+      setScreenshotUrl(data.url);
+    } catch (err: any) {
+      setError(err.message || "Failed to upload screenshot");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -59,7 +97,7 @@ export default function PaymentPage() {
 
     try {
       const payload = {
-        title: bookingDraft?.projectTitle || "Producer Reel Campaign",
+        title: bookingDraft?.projectTitle || `${bookingDraft?.producerName || "Producer"}'s Reel Campaign`,
         clientName: bookingDraft?.producerName || "Producer",
         producerName: bookingDraft?.producerName,
         producerEmail: bookingDraft?.producerEmail,
@@ -67,7 +105,9 @@ export default function PaymentPage() {
         budget: bookingDraft?.totalEstimatedPrice || 40000,
         reelsCount: bookingDraft?.totalReelsCount || 2,
         assignedInfluencers: bookingDraft?.selectedIds || [],
-        utrNumber,
+        selectedCreators: bookingDraft?.selectedCreators || [],
+        selectedMap: bookingDraft?.selectedMap || {},
+        utrNumber: utrNumber.trim(),
         paymentScreenshot: screenshotUrl,
         notes: bookingDraft?.notes || "",
       };
@@ -106,37 +146,56 @@ export default function PaymentPage() {
         </div>
 
         <div className="space-y-2">
-          <h1 className="text-3xl font-black text-white">Payment UTR Submitted!</h1>
+          <h1 className="text-3xl font-black text-white">Payment UTR &amp; Proof Submitted!</h1>
           <p className="text-xs text-gray-300">
-            Your 12-digit UTR <span className="font-mono text-[#D4AF37] font-bold">"{utrNumber}"</span> has been received and sent to the BH Reels Admin team for verification.
+            Your 12-digit UTR <span className="font-mono text-[#D4AF37] font-bold">"{utrNumber}"</span> and screenshot have been received and sent to the BH Reels Admin team for verification.
           </p>
         </div>
 
         <div className="glass-panel p-6 rounded-2xl text-left space-y-3 text-xs">
           <div className="flex justify-between border-b border-gray-800 pb-2">
             <span className="text-gray-400">Payment Status:</span>
-            <span className="font-extrabold text-[#D4AF37]">PENDING ADMIN APPROVAL</span>
+            <span className="font-extrabold text-[#D4AF37] flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+              PENDING ADMIN APPROVAL
+            </span>
           </div>
           <div className="flex justify-between border-b border-gray-800 pb-2">
             <span className="text-gray-400">Producer Name:</span>
             <span className="font-bold text-white">{bookingDraft?.producerName || "Producer"}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between border-b border-gray-800 pb-2">
             <span className="text-gray-400">Total Payable:</span>
             <span className="font-extrabold text-gold-gradient">
               {formatCurrency(bookingDraft?.totalEstimatedPrice || 40000)}
             </span>
           </div>
+          {screenshotUrl && (
+            <div className="flex justify-between items-center pt-1">
+              <span className="text-gray-400">Payment Proof:</span>
+              <a
+                href={screenshotUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-[#D4AF37] font-bold hover:underline flex items-center gap-1"
+              >
+                <Eye className="w-3.5 h-3.5" /> View Uploaded Screenshot
+              </a>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center justify-center gap-4">
           <Link
-            href="/admin/campaigns"
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black font-extrabold text-xs shadow-gold-md"
+            href="/user/profile"
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black font-extrabold text-xs shadow-gold-md hover:brightness-110 transition-all"
           >
-            View in Admin Review Portal
+            Track Status in Portal
           </Link>
-          <Link href="/" className="px-6 py-3 rounded-xl bg-[#131622] text-white text-xs font-semibold">
+          <Link
+            href="/"
+            className="px-6 py-3 rounded-xl bg-[#131622] hover:bg-[#1E2230] text-white text-xs font-semibold border border-[#D4AF37]/20 transition-all"
+          >
             Return to Home
           </Link>
         </div>
@@ -150,7 +209,7 @@ export default function PaymentPage() {
       <div className="flex items-center justify-between">
         <button
           onClick={() => router.back()}
-          className="text-xs text-gray-400 hover:text-white flex items-center gap-1 font-semibold"
+          className="text-xs text-gray-400 hover:text-white flex items-center gap-1 font-semibold transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Estimator
         </button>
@@ -162,7 +221,7 @@ export default function PaymentPage() {
 
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-black text-white">
-          Scan UPI & Submit <span className="text-gold-gradient">UTR Reference</span>
+          Scan UPI &amp; Submit <span className="text-gold-gradient">UTR Reference</span>
         </h1>
         <p className="text-xs text-gray-400">
           Complete payment using Google Pay, PhonePe, Paytm or any BHIM UPI app
@@ -186,7 +245,6 @@ export default function PaymentPage() {
 
           {/* QR Code Scanner Vector Display */}
           <div className="relative w-56 h-56 mx-auto bg-white p-4 rounded-2xl shadow-gold-md flex flex-col items-center justify-center border-4 border-[#D4AF37]">
-            {/* Styled QR placeholder / SVG */}
             <svg viewBox="0 0 100 100" className="w-full h-full text-black">
               <path
                 d="M 10 10 H 40 V 40 H 10 Z M 15 15 V 35 H 35 V 15 Z M 20 20 H 30 V 30 H 20 Z"
@@ -217,7 +275,8 @@ export default function PaymentPage() {
               <button
                 type="button"
                 onClick={copyUpi}
-                className="p-1.5 rounded-lg bg-[#181B2B] text-gray-300 hover:text-white border border-[#D4AF37]/30"
+                className="p-1.5 rounded-lg bg-[#181B2B] text-gray-300 hover:text-white border border-[#D4AF37]/30 transition-colors"
+                title="Copy UPI ID"
               >
                 {copiedUpi ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
               </button>
@@ -253,7 +312,7 @@ export default function PaymentPage() {
             </div>
           </div>
 
-          {/* UTR Input Form */}
+          {/* UTR & Screenshot Upload Form */}
           <form onSubmit={handlePaymentSubmit} className="space-y-4 text-xs">
             <div>
               <label className="block text-gray-300 font-bold mb-1">
@@ -272,19 +331,68 @@ export default function PaymentPage() {
               </p>
             </div>
 
+            {/* Payment Proof Screenshot Upload */}
             <div>
-              <label className="block text-gray-300 font-bold mb-1">Payment Proof Screenshot URL</label>
-              <input
-                type="url"
-                value={screenshotUrl}
-                onChange={(e) => setScreenshotUrl(e.target.value)}
-                className="w-full bg-[#0E1017] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
-              />
+              <label className="block text-gray-300 font-bold mb-1.5 flex items-center justify-between">
+                <span>Upload Payment Proof Screenshot</span>
+                <span className="text-[10px] font-normal text-gray-500">PNG, JPG up to 10MB</span>
+              </label>
+
+              {screenshotUrl ? (
+                /* Uploaded Preview State */
+                <div className="relative rounded-2xl border border-[#D4AF37]/40 bg-[#0E1017] p-3 flex items-center gap-3">
+                  <img
+                    src={screenshotUrl}
+                    alt="Payment Proof"
+                    className="w-16 h-16 rounded-xl object-cover border border-[#D4AF37]/30 bg-black shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 text-emerald-400 font-bold text-xs">
+                      <CheckCircle2 className="w-4 h-4 shrink-0" />
+                      <span>Screenshot Uploaded</span>
+                    </div>
+                    <p className="text-[10px] text-gray-500 truncate mt-0.5">{screenshotUrl}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setScreenshotUrl("")}
+                    className="w-7 h-7 rounded-lg bg-red-950/40 text-red-400 hover:bg-red-900/60 flex items-center justify-center transition-colors"
+                    title="Remove Screenshot"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                /* Upload Dropzone */
+                <label className="relative border-2 border-dashed border-[#D4AF37]/30 hover:border-[#D4AF37]/70 rounded-2xl p-4 bg-[#0E1017]/80 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all hover:bg-[#131622]">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    disabled={uploading}
+                  />
+                  {uploading ? (
+                    <div className="flex flex-col items-center gap-2 py-2 text-center">
+                      <Loader2 className="w-6 h-6 text-[#D4AF37] animate-spin" />
+                      <span className="text-xs text-gray-300 font-semibold">Uploading payment proof...</span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-1.5 py-2 text-center">
+                      <div className="w-10 h-10 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37]">
+                        <Upload className="w-4 h-4" />
+                      </div>
+                      <span className="text-xs font-bold text-white">Click or drag screenshot to upload</span>
+                      <span className="text-[10px] text-gray-500">Google Pay / PhonePe / Paytm receipt screenshot</span>
+                    </div>
+                  )}
+                </label>
+              )}
             </div>
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || uploading}
               className="w-full py-4 rounded-xl bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black font-black text-sm shadow-gold-md hover:shadow-gold-lg hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {loading ? (

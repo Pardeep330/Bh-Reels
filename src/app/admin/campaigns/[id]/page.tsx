@@ -216,6 +216,26 @@ export default function CampaignDetailPage() {
                 UTR Transaction Code:{" "}
                 <span className="font-mono text-[#D4AF37] font-extrabold">{campaign.utrNumber || "N/A"}</span>
               </div>
+              {campaign.paymentScreenshot && (
+                <div className="pt-2 flex items-center gap-3">
+                  <img
+                    src={campaign.paymentScreenshot}
+                    alt="Payment Proof"
+                    className="w-14 h-14 rounded-xl object-cover border border-[#D4AF37] bg-black"
+                  />
+                  <div>
+                    <div className="font-bold text-white text-[11px]">Payment Proof Uploaded</div>
+                    <a
+                      href={campaign.paymentScreenshot}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[#D4AF37] font-bold text-[10px] hover:underline flex items-center gap-1 mt-0.5"
+                    >
+                      <ExternalLink className="w-3 h-3" /> View Full Screenshot
+                    </a>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="flex items-center justify-end gap-3">

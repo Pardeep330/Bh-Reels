@@ -19,34 +19,61 @@ export async function GET(req: Request) {
       utrNumber: { $exists: true, $ne: "" },
     }).sort({ createdAt: -1 });
 
-    return NextResponse.json({
-      success: true,
-      pendingCount: pendingCampaigns.length,
-      pendingCampaigns: pendingCampaigns.map((c) => ({
+    // Also fetch influencers to populate creator details if needed
+    const { Influencer } = await import("@/models/Influencer");
+    const allInfluencers = await Influencer.find({}).lean();
+    const influencerMap = new Map(allInfluencers.map((i: any) => [i._id.toString(), i]));
+    allInfluencers.forEach((i: any) => {
+      if (i.id) influencerMap.set(i.id, i);
+    });
+
+    const formatCampaign = (c: any) => {
+      let creators = c.selectedCreators || [];
+      if ((!creators || creators.length === 0) && c.assignedInfluencers && c.assignedInfluencers.length > 0) {
+        creators = c.assignedInfluencers.map((id: string) => {
+          const inf = influencerMap.get(id);
+          return {
+            id,
+            name: inf?.name || id,
+            instaHandle: inf?.instaHandle || "",
+            avatar: inf?.avatar || "",
+            category: inf?.category || "",
+            ratePerReel: inf?.ratePerReel || 0,
+            reelCount: 1,
+            subtotal: inf?.ratePerReel || 0,
+          };
+        });
+      }
+
+      return {
         id: c._id.toString(),
         _id: c._id.toString(),
         title: c.title,
         clientName: c.clientName,
-        producerName: c.producerName || "",
+        producerName: c.producerName || c.clientName || "Producer",
         producerEmail: c.producerEmail || "",
         producerPhone: c.producerPhone || "",
         budget: c.budget,
+        reelsCount: c.reelsCount || 1,
+        assignedInfluencers: c.assignedInfluencers || [],
+        selectedCreators: creators,
+        selectedMap: c.selectedMap || {},
         utrNumber: c.utrNumber || "",
         paymentScreenshot: c.paymentScreenshot || "",
         paymentStatus: c.paymentStatus,
-        createdAt: c.createdAt,
-      })),
-      allPayments: allPayments.map((c) => ({
-        id: c._id.toString(),
-        _id: c._id.toString(),
-        title: c.title,
-        clientName: c.clientName,
-        budget: c.budget,
-        utrNumber: c.utrNumber || "",
-        paymentStatus: c.paymentStatus,
+        status: c.status,
+        targetCategory: c.targetCategory || "General",
+        notes: c.notes || c.description || "",
         rejectionReason: c.rejectionReason || "",
         createdAt: c.createdAt,
-      })),
+      };
+    };
+
+    return NextResponse.json({
+      success: true,
+      pendingCount: pendingCampaigns.length,
+      pendingCampaigns: pendingCampaigns.map(formatCampaign),
+      allPayments: allPayments.map(formatCampaign),
     });
   } catch (error: any) {
     return NextResponse.json({ error: error.message || "Failed to fetch payments" }, { status: 500 });
