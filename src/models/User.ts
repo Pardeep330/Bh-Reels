@@ -28,8 +28,12 @@ const UserSchema: Schema = new Schema<IUser>(
     otpExpiresAt: { type: Date, default: null },
     status: { type: String, enum: ["active", "inactive", "suspended"], default: "active" },
   },
-  { timestamps: true }
+  { timestamps: true, strict: false }
 );
+
+if (mongoose.models && mongoose.models.User) {
+  delete mongoose.models.User;
+}
 
 export const User: Model<IUser> =
   mongoose.models.User || mongoose.model<IUser>("User", UserSchema);

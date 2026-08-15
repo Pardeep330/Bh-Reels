@@ -58,8 +58,13 @@ const CampaignSchema: Schema = new Schema<ICampaign>(
     instagramUrl: { type: String, default: "" },
     deliveredReels: { type: Number, default: 0 },
   },
-  { timestamps: true }
+  { timestamps: true, strict: false }
 );
+
+// Delete cached model in Next.js dev hot-reloading environment to force schema update
+if (mongoose.models && mongoose.models.Campaign) {
+  delete mongoose.models.Campaign;
+}
 
 export const Campaign: Model<ICampaign> =
   mongoose.models.Campaign || mongoose.model<ICampaign>("Campaign", CampaignSchema);

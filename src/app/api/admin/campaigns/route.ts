@@ -79,9 +79,9 @@ export async function POST(req: Request) {
     await dbConnect();
     const body = await req.json();
 
-    if (!body.title || !body.clientName || !body.budget) {
+    if (!body.title || !body.clientName || body.budget === undefined || body.budget === null) {
       return NextResponse.json(
-        { error: "Title, client name, and budget are required" },
+        { error: "Title and client name are required" },
         { status: 400 }
       );
     }

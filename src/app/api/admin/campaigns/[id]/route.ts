@@ -49,6 +49,11 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
         targetCategory: cmp.targetCategory || "General",
         deliveredReels: cmp.deliveredReels || 0,
         notes: cmp.notes || "",
+        description: cmp.description || "",
+        posterUrl: cmp.posterUrl || "",
+        youtubeUrl: cmp.youtubeUrl || "",
+        spotifyUrl: cmp.spotifyUrl || "",
+        instagramUrl: cmp.instagramUrl || "",
         createdAt: cmp.createdAt,
       },
     });
@@ -68,11 +73,24 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     const { id } = params;
     const body = await req.json();
 
+    const updateFields: any = {};
+    if (body.title !== undefined) updateFields.title = body.title;
+    if (body.posterUrl !== undefined) updateFields.posterUrl = body.posterUrl;
+    if (body.description !== undefined) updateFields.description = body.description;
+    if (body.notes !== undefined) updateFields.notes = body.notes;
+    if (body.youtubeUrl !== undefined) updateFields.youtubeUrl = body.youtubeUrl;
+    if (body.spotifyUrl !== undefined) updateFields.spotifyUrl = body.spotifyUrl;
+    if (body.instagramUrl !== undefined) updateFields.instagramUrl = body.instagramUrl;
+    if (body.clientName !== undefined) updateFields.clientName = body.clientName;
+    if (body.budget !== undefined) updateFields.budget = body.budget;
+    if (body.status !== undefined) updateFields.status = body.status;
+
     let cmp = null;
     if (mongoose.Types.ObjectId.isValid(id)) {
-      cmp = await Campaign.findByIdAndUpdate(id, body, { new: true });
-    } else {
-      cmp = await Campaign.findOneAndUpdate({ _id: id }, body, { new: true });
+      cmp = await Campaign.findByIdAndUpdate(id, { $set: updateFields }, { new: true, runValidators: false });
+    }
+    if (!cmp) {
+      cmp = await Campaign.findOneAndUpdate({ _id: id }, { $set: updateFields }, { new: true });
     }
 
     if (!cmp) {
@@ -86,22 +104,27 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
         _id: cmp._id.toString(),
         title: cmp.title,
         clientName: cmp.clientName,
-        producerName: cmp.producerName,
-        producerEmail: cmp.producerEmail,
-        producerPhone: cmp.producerPhone,
+        producerName: cmp.producerName || "",
+        producerEmail: cmp.producerEmail || "",
+        producerPhone: cmp.producerPhone || "",
         budget: cmp.budget,
         reelsCount: cmp.reelsCount,
-        assignedInfluencers: cmp.assignedInfluencers,
+        assignedInfluencers: cmp.assignedInfluencers || [],
         status: cmp.status,
-        paymentStatus: cmp.paymentStatus,
-        utrNumber: cmp.utrNumber,
-        paymentScreenshot: cmp.paymentScreenshot,
-        rejectionReason: cmp.rejectionReason,
+        paymentStatus: cmp.paymentStatus || "approved",
+        utrNumber: cmp.utrNumber || "",
+        paymentScreenshot: cmp.paymentScreenshot || "",
+        rejectionReason: cmp.rejectionReason || "",
         startDate: cmp.startDate,
         endDate: cmp.endDate,
-        targetCategory: cmp.targetCategory,
-        deliveredReels: cmp.deliveredReels,
-        notes: cmp.notes,
+        targetCategory: cmp.targetCategory || "General",
+        deliveredReels: cmp.deliveredReels || 0,
+        notes: cmp.notes || "",
+        description: cmp.description || "",
+        posterUrl: cmp.posterUrl || "",
+        youtubeUrl: cmp.youtubeUrl || "",
+        spotifyUrl: cmp.spotifyUrl || "",
+        instagramUrl: cmp.instagramUrl || "",
         createdAt: cmp.createdAt,
       },
     });
