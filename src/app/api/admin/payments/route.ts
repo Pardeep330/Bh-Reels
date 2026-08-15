@@ -16,7 +16,11 @@ export async function GET(req: Request) {
     }).sort({ createdAt: -1 });
 
     const allPayments = await Campaign.find({
-      utrNumber: { $exists: true, $ne: "" },
+      $or: [
+        { utrNumber: { $exists: true, $ne: "" } },
+        { paymentStatus: { $in: ["approved", "pending_verification", "rejected"] } },
+        { budget: { $gt: 0 } },
+      ],
     }).sort({ createdAt: -1 });
 
     // Also fetch influencers to populate creator details if needed
