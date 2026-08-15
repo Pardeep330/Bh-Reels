@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { Header } from "@/components/admin/Header";
+import { useAuth } from "@/context/AuthContext";
 import {
   Megaphone,
   Plus,
@@ -15,9 +17,11 @@ import {
   X,
   FileCheck,
   ShieldAlert,
+  ArrowRight,
 } from "lucide-react";
 
 export default function CampaignsPage() {
+  const { getAuthHeaders } = useAuth();
   const [campaigns, setCampaigns] = useState<any[]>([]);
   const [influencers, setInfluencers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,9 +50,10 @@ export default function CampaignsPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
+      const headers = getAuthHeaders();
       const [resCmp, resInf] = await Promise.all([
-        fetch("/api/admin/campaigns"),
-        fetch("/api/admin/influencers"),
+        fetch("/api/admin/campaigns", { headers }),
+        fetch("/api/admin/influencers", { headers }),
       ]);
 
       if (resCmp.ok) {
@@ -68,10 +73,10 @@ export default function CampaignsPage() {
 
   const handleApprovePayment = async (campaignId: string) => {
     try {
-      const res = await fetch("/api/admin/payments/approve", {
+      const res = await fetch("/api/admin/payments", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ campaignId }),
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ campaignId, action: "approve" }),
       });
 
       if (res.ok) {
@@ -85,11 +90,12 @@ export default function CampaignsPage() {
   const handleRejectPayment = async () => {
     if (!selectedCampaign) return;
     try {
-      const res = await fetch("/api/admin/payments/reject", {
+      const res = await fetch("/api/admin/payments", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
-          campaignId: selectedCampaign.id,
+          campaignId: selectedCampaign.id || selectedCampaign._id,
+          action: "reject",
           reason: rejectionReason,
         }),
       });
@@ -109,11 +115,15 @@ export default function CampaignsPage() {
     try {
       const res = await fetch("/api/admin/campaigns", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify(formData),
       });
 
       if (res.ok) {
+        const d = await res.json();
+        if (d.campaign) {
+          setCampaigns((prev) => [d.campaign, ...prev]);
+        }
         setShowAddModal(false);
         fetchData();
       }
@@ -127,7 +137,7 @@ export default function CampaignsPage() {
       style: "currency",
       currency: "INR",
       maximumFractionDigits: 0,
-    }).format(val);
+    }).format(val || 0);
   };
 
   const pendingCampaigns = campaigns.filter((c) => c.paymentStatus === "pending_verification");
@@ -191,13 +201,14 @@ export default function CampaignsPage() {
         </button>
       </div>
 
-      {/* Campaign Cards */}
+      {/* Campaign Cards Grid */}
       {loading ? (
-        <div className="py-8 text-center text-xs text-gray-400">Loading campaigns...</div>
+        <div className="py-8 text-center text-xs text-gray-400">Loading campaigns from MongoDB...</div>
       ) : filteredCampaigns.length === 0 ? (
         <div className="glass-panel p-12 rounded-2xl text-center space-y-3">
           <Megaphone className="w-12 h-12 text-[#D4AF37] mx-auto opacity-50" />
           <h3 className="text-base font-bold text-white">No Campaigns Found</h3>
+          <p className="text-xs text-gray-400">Try adjusting your search filters or add a new campaign.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -206,7 +217,7 @@ export default function CampaignsPage() {
 
             return (
               <div
-                key={c.id}
+                key={c.id || c._id}
                 className={`glass-panel p-6 rounded-2xl space-y-5 flex flex-col justify-between transition-all ${
                   isPending ? "border-2 border-[#D4AF37] shadow-gold-md" : "border border-[#D4AF37]/20"
                 }`}
@@ -224,7 +235,13 @@ export default function CampaignsPage() {
                         </span>
                       )}
                     </div>
-                    <h3 className="text-lg font-extrabold text-white mt-1">{c.title}</h3>
+
+                    <Link href={`/admin/campaigns/${c.id || c._id}`}>
+                      <h3 className="text-lg font-extrabold text-white mt-1 hover:text-[#D4AF37] transition-colors flex items-center gap-1.5">
+                        {c.title} <ArrowRight className="w-4 h-4 text-[#D4AF37] opacity-60" />
+                      </h3>
+                    </Link>
+
                     <div className="text-xs text-gray-400">
                       Client / Producer: <span className="text-white font-bold">{c.producerName || c.clientName}</span>
                     </div>
@@ -251,9 +268,7 @@ export default function CampaignsPage() {
                   </div>
                   <div>
                     <div className="text-[10px] text-gray-400 uppercase font-semibold">UTR Reference No.</div>
-                    <div className="text-xs font-mono font-extrabold text-white">
-                      {c.utrNumber || "N/A"}
-                    </div>
+                    <div className="text-xs font-mono font-extrabold text-white">{c.utrNumber || "N/A"}</div>
                   </div>
                 </div>
 
@@ -274,86 +289,154 @@ export default function CampaignsPage() {
                   </div>
                 )}
 
-                {/* Assigned Influencers List */}
-                <div className="space-y-1">
-                  <div className="text-xs font-bold text-gray-300 flex items-center gap-1">
-                    <Users className="w-3.5 h-3.5 text-[#D4AF37]" /> Assigned Creators ({c.assignedInfluencers?.length || 0}):
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {c.assignedInfluencers && c.assignedInfluencers.length > 0 ? (
-                      c.assignedInfluencers.map((infId: string) => {
-                        const infObj = influencers.find((i) => i.id === infId);
-                        return (
-                          <span
-                            key={infId}
-                            className="px-2 py-0.5 rounded bg-[#131622] text-[10px] font-semibold text-white border border-[#D4AF37]/20"
-                          >
-                            {infObj ? infObj.name : infId}
-                          </span>
-                        );
-                      })
-                    ) : (
-                      <span className="text-xs text-gray-500 italic">No creators assigned</span>
-                    )}
-                  </div>
+                {/* Footer Action Bar */}
+                <div className="pt-3 border-t border-[#D4AF37]/15 flex items-center justify-between">
+                  <Link
+                    href={`/admin/campaigns/${c.id || c._id}`}
+                    className="text-xs text-[#D4AF37] font-bold hover:underline"
+                  >
+                    Full Campaign Details →
+                  </Link>
+
+                  {isPending ? (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => {
+                          setSelectedCampaign(c);
+                          setShowRejectModal(true);
+                        }}
+                        className="px-3 py-1.5 rounded-lg bg-red-950 text-red-400 border border-red-500/40 text-xs font-bold hover:bg-red-900 transition-all flex items-center gap-1"
+                      >
+                        <XCircle className="w-3.5 h-3.5" /> Reject UTR
+                      </button>
+                      <button
+                        onClick={() => handleApprovePayment(c.id || c._id)}
+                        className="px-3.5 py-1.5 rounded-lg bg-emerald-500 text-black font-extrabold text-xs hover:bg-emerald-400 transition-all flex items-center gap-1 shadow-md"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5" /> Approve Payment
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-[11px] text-gray-400">
+                      Status: <span className="text-white font-bold">{c.status}</span>
+                    </span>
+                  )}
                 </div>
-
-                {/* Admin Approval / Rejection Actions */}
-                {isPending && (
-                  <div className="pt-3 border-t border-[#D4AF37]/20 flex items-center justify-end gap-3">
-                    <button
-                      onClick={() => {
-                        setSelectedCampaign(c);
-                        setShowRejectModal(true);
-                      }}
-                      className="px-4 py-2 rounded-xl bg-red-950/50 hover:bg-red-900/80 border border-red-500/40 text-red-300 text-xs font-bold transition-all flex items-center gap-1.5"
-                    >
-                      <XCircle className="w-4 h-4" /> Reject Payment
-                    </button>
-
-                    <button
-                      onClick={() => handleApprovePayment(c.id)}
-                      className="px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 text-white font-extrabold text-xs shadow-md hover:brightness-110 transition-all flex items-center gap-1.5"
-                    >
-                      <CheckCircle2 className="w-4 h-4" /> Approve UTR Payment
-                    </button>
-                  </div>
-                )}
               </div>
             );
           })}
         </div>
       )}
 
-      {/* Reject Payment Reason Modal */}
-      {showRejectModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="glass-panel w-full max-w-md rounded-2xl p-6 border border-red-500/40 shadow-2xl space-y-4">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <ShieldAlert className="w-5 h-5 text-red-400" /> Reject UTR Payment?
-            </h3>
-            <p className="text-xs text-gray-400">
-              Provide a rejection reason for <span className="text-white font-bold">{selectedCampaign?.title}</span>:
+      {/* Create Campaign Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="glass-panel w-full max-w-lg p-6 rounded-2xl border border-[#D4AF37]/40 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-[#D4AF37]/20">
+              <h3 className="text-base font-bold text-white flex items-center gap-2">
+                <Megaphone className="w-5 h-5 text-[#D4AF37]" /> Create Marketing Campaign
+              </h3>
+              <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddSubmit} className="space-y-4 text-xs">
+              <div>
+                <label className="block text-gray-300 font-semibold mb-1">Campaign Title *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Diwali Festive Launch"
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#D4AF37]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-gray-300 font-semibold mb-1">Client / Brand Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Silk & Threads"
+                    value={formData.clientName}
+                    onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
+                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-300 font-semibold mb-1">Total Budget (₹) *</label>
+                  <input
+                    type="number"
+                    required
+                    placeholder="100000"
+                    value={formData.budget}
+                    onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-[#D4AF37]/15 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  className="px-4 py-2 rounded-xl bg-[#131622] text-gray-300 hover:text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black font-extrabold"
+                >
+                  Save Campaign
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Reject Payment Modal */}
+      {showRejectModal && selectedCampaign && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="glass-panel w-full max-w-md p-6 rounded-2xl border border-red-500/40 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-red-500/20 text-red-400">
+              <h3 className="text-base font-bold flex items-center gap-2">
+                <ShieldAlert className="w-5 h-5" /> Reject Payment (UTR Verification)
+              </h3>
+              <button onClick={() => setShowRejectModal(false)} className="text-gray-400 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <p className="text-xs text-gray-300">
+              Please specify the reason for rejecting UTR <span className="font-mono text-[#D4AF37] font-bold">{selectedCampaign.utrNumber}</span>:
             </p>
 
             <textarea
               rows={3}
-              placeholder="e.g. UTR number not found in bank statement..."
+              required
+              placeholder="e.g. Invalid 12-digit UTR transaction number or amount mismatch."
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
-              className="w-full bg-[#0E1017] border border-red-500/30 rounded-xl p-3 text-xs text-white focus:outline-none"
+              className="w-full bg-[#131622] border border-red-500/30 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500"
             />
 
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
+                type="button"
                 onClick={() => setShowRejectModal(false)}
-                className="px-4 py-2 rounded-xl bg-gray-800 text-gray-300 text-xs font-semibold"
+                className="px-4 py-2 rounded-xl bg-[#131622] text-gray-300 text-xs"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={handleRejectPayment}
-                className="px-5 py-2 rounded-xl bg-red-600 text-white text-xs font-bold hover:bg-red-700"
+                className="px-5 py-2 rounded-xl bg-red-600 text-white font-extrabold text-xs hover:bg-red-500"
               >
                 Confirm Rejection
               </button>

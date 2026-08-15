@@ -70,11 +70,6 @@ export const PublicFooter: React.FC = () => {
                 Producer Portal Login
               </Link>
             </li>
-            <li>
-              <Link href="/admin/dashboard" className="hover:text-[#D4AF37] transition-colors">
-                Admin Management Portal
-              </Link>
-            </li>
           </ul>
         </div>
 

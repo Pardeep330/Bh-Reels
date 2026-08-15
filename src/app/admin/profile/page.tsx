@@ -13,10 +13,13 @@ import {
   CheckCircle2,
   Lock,
   Sparkles,
+  ToggleLeft,
+  ToggleRight,
+  ShieldAlert,
 } from "lucide-react";
 
 export default function ProfilePage() {
-  const { user, updateProfile } = useAuth();
+  const { user, updateProfile, toggle2FA } = useAuth();
   const [profileData, setProfileData] = useState({
     name: user?.name || "BH Admin",
     email: user?.email || "admin@bhreels.com",
@@ -29,8 +32,10 @@ export default function ProfilePage() {
     confirmPassword: "",
   });
 
+  const [is2FA, setIs2FA] = useState(user?.is2FAEnabled !== false);
   const [profileMsg, setProfileMsg] = useState("");
   const [passwordMsg, setPasswordMsg] = useState("");
+  const [twoFaMsg, setTwoFaMsg] = useState("");
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,20 +43,40 @@ export default function ProfilePage() {
       await updateProfile(profileData);
       setProfileMsg("Profile updated successfully!");
       setTimeout(() => setProfileMsg(""), 4000);
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      setProfileMsg(e.message || "Failed to update profile");
     }
   };
 
-  const handlePasswordSubmit = (e: React.FormEvent) => {
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       setPasswordMsg("New passwords do not match!");
       return;
     }
-    setPasswordMsg("Password changed successfully!");
-    setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
-    setTimeout(() => setPasswordMsg(""), 4000);
+    try {
+      await updateProfile({
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+      });
+      setPasswordMsg("Password changed successfully!");
+      setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      setTimeout(() => setPasswordMsg(""), 4000);
+    } catch (e: any) {
+      setPasswordMsg(e.message || "Failed to update password");
+    }
+  };
+
+  const handleToggle2FA = async () => {
+    try {
+      const nextState = !is2FA;
+      await toggle2FA(nextState);
+      setIs2FA(nextState);
+      setTwoFaMsg(`2-Step OTP Authentication is now ${nextState ? "Enabled" : "Disabled"}.`);
+      setTimeout(() => setTwoFaMsg(""), 4000);
+    } catch (e: any) {
+      setTwoFaMsg(e.message || "Failed to update 2FA status");
+    }
   };
 
   return (
@@ -80,23 +105,46 @@ export default function ProfilePage() {
               <p className="text-xs text-[#C5A059] font-mono mt-0.5">{user?.email || "admin@bhreels.com"}</p>
             </div>
 
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-xs font-bold text-emerald-400">
-              <ShieldCheck className="w-4 h-4" /> 2-Step OTP Security Active
+            <div
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
+                is2FA
+                  ? "bg-emerald-950/60 border border-emerald-500/30 text-emerald-400"
+                  : "bg-amber-950/60 border border-amber-500/30 text-amber-400"
+              }`}
+            >
+              {is2FA ? <ShieldCheck className="w-4 h-4" /> : <ShieldAlert className="w-4 h-4" />}
+              {is2FA ? "2-Step OTP Security Active" : "2-Step OTP Disabled"}
             </div>
           </div>
 
-          <div className="glass-panel rounded-2xl p-6 space-y-3">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Account Role & Scope</h3>
-            <div className="p-3 rounded-xl bg-[#0E1017] border border-[#D4AF37]/15 space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Role:</span>
-                <span className="font-bold text-[#D4AF37] uppercase">Platform Administrator</span>
+          {/* 2FA Toggle Switch Card */}
+          <div className="glass-panel rounded-2xl p-6 space-y-4 border border-[#D4AF37]/30">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-[#D4AF37]" /> 2-Factor Authentication
+                </h3>
+                <p className="text-[11px] text-gray-400 mt-0.5">Require 6-digit OTP verification code on sign in</p>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Access Level:</span>
-                <span className="font-bold text-white">Full Access (Influencers, Users, Ads)</span>
-              </div>
+
+              <button
+                onClick={handleToggle2FA}
+                className="text-[#D4AF37] hover:scale-105 transition-transform"
+                title={is2FA ? "Disable 2FA" : "Enable 2FA"}
+              >
+                {is2FA ? (
+                  <ToggleRight className="w-8 h-8 text-[#D4AF37]" />
+                ) : (
+                  <ToggleLeft className="w-8 h-8 text-gray-500" />
+                )}
+              </button>
             </div>
+
+            {twoFaMsg && (
+              <div className="p-2.5 rounded-xl bg-[#131622] border border-[#D4AF37]/30 text-xs font-semibold text-[#D4AF37]">
+                {twoFaMsg}
+              </div>
+            )}
           </div>
         </div>
 

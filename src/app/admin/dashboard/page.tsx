@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Header } from "@/components/admin/Header";
+import { useAuth } from "@/context/AuthContext";
 import {
   Video,
   Users,
@@ -18,14 +19,15 @@ import {
 } from "lucide-react";
 
 export default function DashboardPage() {
+  const { getAuthHeaders } = useAuth();
   const [stats, setStats] = useState({
-    totalInfluencers: 6,
-    totalUsers: 3,
-    totalCampaigns: 3,
-    activeCampaigns: 3,
-    totalReach: 3630000,
-    avgReelRate: 27500,
-    totalBudget: 490000,
+    totalInfluencers: 0,
+    totalUsers: 0,
+    totalCampaigns: 0,
+    activeCampaigns: 0,
+    totalReach: 0,
+    avgReelRate: 0,
+    totalBudget: 0,
   });
 
   const [influencers, setInfluencers] = useState<any[]>([]);
@@ -37,15 +39,16 @@ export default function DashboardPage() {
 
   const fetchStats = async () => {
     try {
+      const headers = getAuthHeaders();
       const [resStats, resInf, resCmp] = await Promise.all([
-        fetch("/api/admin/stats"),
-        fetch("/api/admin/influencers"),
-        fetch("/api/admin/campaigns"),
+        fetch("/api/admin/stats", { headers }),
+        fetch("/api/admin/influencers", { headers }),
+        fetch("/api/admin/campaigns", { headers }),
       ]);
 
       if (resStats.ok) {
         const d = await resStats.json();
-        setStats(d.stats);
+        if (d.stats) setStats(d.stats);
       }
       if (resInf.ok) {
         const d = await resInf.json();

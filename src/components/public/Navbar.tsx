@@ -9,7 +9,6 @@ import {
   Sparkles,
   Calculator,
   User,
-  ShieldCheck,
   Menu,
   X,
   LogOut,
@@ -80,14 +79,6 @@ export const PublicNavbar: React.FC = () => {
 
         {/* Right Action Controls */}
         <div className="hidden lg:flex items-center gap-3">
-          {/* Admin Portal Quick Switcher */}
-          <Link
-            href="/admin/dashboard"
-            className="px-3.5 py-2 rounded-xl bg-[#131622] border border-[#D4AF37]/30 hover:border-[#D4AF37] text-xs font-bold text-[#D4AF37] flex items-center gap-1.5 transition-all"
-          >
-            <ShieldCheck className="w-4 h-4" /> Admin Portal
-          </Link>
-
           {/* User Sign In / Profile */}
           {user ? (
             <div className="flex items-center gap-2">
@@ -152,11 +143,11 @@ export const PublicNavbar: React.FC = () => {
           ))}
           <div className="pt-2 border-t border-gray-800 space-y-2">
             <Link
-              href="/admin/dashboard"
+              href="/user/login"
               onClick={() => setMobileMenuOpen(false)}
               className="block px-4 py-2.5 rounded-xl text-xs font-bold text-[#D4AF37] bg-[#131622]"
             >
-              Shield Admin Portal
+              Sign In
             </Link>
           </div>
         </div>

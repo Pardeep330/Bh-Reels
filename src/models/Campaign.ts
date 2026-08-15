@@ -18,6 +18,11 @@ export interface ICampaign extends Document {
   endDate: Date;
   targetCategory: string;
   notes?: string;
+  description?: string;
+  posterUrl?: string;
+  youtubeUrl?: string;
+  spotifyUrl?: string;
+  instagramUrl?: string;
   deliveredReels: number;
   createdAt: Date;
   updatedAt: Date;
@@ -46,6 +51,11 @@ const CampaignSchema: Schema = new Schema<ICampaign>(
     endDate: { type: Date, default: () => new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
     targetCategory: { type: String, default: "General" },
     notes: { type: String, default: "" },
+    description: { type: String, default: "" },
+    posterUrl: { type: String, default: "" },
+    youtubeUrl: { type: String, default: "" },
+    spotifyUrl: { type: String, default: "" },
+    instagramUrl: { type: String, default: "" },
     deliveredReels: { type: Number, default: 0 },
   },
   { timestamps: true }
