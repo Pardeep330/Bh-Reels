@@ -140,9 +140,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#08090C] text-gray-100 flex items-center justify-center p-4 relative overflow-hidden selection:bg-[#D4AF37] selection:text-black">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex items-center justify-center p-4 relative overflow-hidden selection:bg-[#D4AF37] selection:text-white">
       {/* Background Radial Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold-radial opacity-30 pointer-events-none rounded-full blur-3xl" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold-radial opacity-40 pointer-events-none rounded-full blur-3xl" />
 
       <div className="w-full max-w-md relative z-10 space-y-6">
         {/* Brand Header */}
@@ -150,41 +150,41 @@ export default function LoginPage() {
           <div className="inline-block transform hover:scale-105 transition-transform duration-300">
             <BHLogo size="xl" />
           </div>
-          <p className="text-xs text-gray-400 font-medium">Admin Management Portal • 2-Step Verified</p>
+          <p className="text-xs text-slate-500 font-medium">Admin Management Portal • 2-Step Verified</p>
         </div>
 
         {/* Auth Card Container */}
-        <div className="glass-panel p-8 rounded-3xl border border-[#D4AF37]/35 shadow-2xl space-y-6 relative overflow-hidden">
+        <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6 relative overflow-hidden">
           {/* Top Metallic Border Shine */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-80" />
 
           {/* Header Step Indicator */}
-          <div className="flex items-center justify-between pb-4 border-b border-[#D4AF37]/15">
+          <div className="flex items-center justify-between pb-4 border-b border-slate-100">
             <div>
-              <h2 className="text-xl font-extrabold text-white">
+              <h2 className="text-xl font-extrabold text-slate-900">
                 {step === 1 ? "Admin Sign In" : "2-Step Verification"}
               </h2>
-              <p className="text-xs text-gray-400 mt-0.5">
+              <p className="text-xs text-slate-500 mt-0.5">
                 {step === 1 ? "Enter your admin credentials" : `Enter the 6-digit OTP code sent to ${email}`}
               </p>
             </div>
 
-            <span className="w-8 h-8 rounded-full bg-[#1E2230] border border-[#D4AF37]/40 flex items-center justify-center text-xs font-bold text-[#D4AF37]">
+            <span className="w-8 h-8 rounded-full bg-slate-100 border border-[#D4AF37]/40 flex items-center justify-center text-xs font-bold text-[#B8860B]">
               {step}/2
             </span>
           </div>
 
           {/* Error Message Alert */}
           {error && (
-            <div className="p-3.5 rounded-xl bg-red-950/70 border border-red-500/40 text-red-300 text-xs flex items-start gap-2 animate-in fade-in">
-              <AlertCircle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" />
+            <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs flex items-start gap-2 animate-in fade-in">
+              <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
           {/* Demo Credentials & OTP Helper Banner */}
-          <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#131622] to-[#181B2B] border border-[#D4AF37]/30 space-y-1.5 text-xs">
-            <div className="flex items-center justify-between text-[#D4AF37] font-bold">
+          <div className="p-3.5 rounded-2xl bg-amber-50/60 border border-[#D4AF37]/30 space-y-1.5 text-xs">
+            <div className="flex items-center justify-between text-[#B8860B] font-bold">
               <span className="flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5" /> Demo Login Credentials
               </span>
@@ -192,21 +192,21 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={fillDemoOtp}
-                  className="text-[10px] px-2 py-0.5 rounded bg-[#D4AF37]/20 border border-[#D4AF37]/40 hover:bg-[#D4AF37]/30 text-[#D4AF37] flex items-center gap-1 font-mono"
+                  className="text-[10px] px-2 py-0.5 rounded bg-[#D4AF37]/20 border border-[#D4AF37]/40 hover:bg-[#D4AF37]/30 text-[#B8860B] flex items-center gap-1 font-mono font-bold"
                 >
-                  {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                  {copied ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
                   Auto-fill OTP ({demoOtp})
                 </button>
               )}
             </div>
             {step === 1 ? (
-              <div className="text-gray-400 text-[11px] font-mono leading-tight">
-                Email: <span className="text-white font-bold">admin@bhreels.com</span> | Pass:{" "}
-                <span className="text-white font-bold">admin123</span>
+              <div className="text-slate-600 text-[11px] font-mono leading-tight">
+                Email: <span className="text-slate-900 font-bold">admin@bhreels.com</span> | Pass:{" "}
+                <span className="text-slate-900 font-bold">admin123</span>
               </div>
             ) : (
-              <div className="text-gray-400 text-[11px] leading-tight">
-                Active 6-digit OTP: <span className="font-mono text-[#D4AF37] font-extrabold">{demoOtp || "123456"}</span>
+              <div className="text-slate-600 text-[11px] leading-tight">
+                Active 6-digit OTP: <span className="font-mono text-[#B8860B] font-extrabold">{demoOtp || "123456"}</span>
               </div>
             )}
           </div>
@@ -215,34 +215,34 @@ export default function LoginPage() {
           {step === 1 && (
             <form onSubmit={handleStep1Login} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-gray-300">Admin Email</label>
+                <label className="block text-xs font-bold text-slate-700">Admin Email</label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl pl-10 pr-4 py-3 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] transition-all"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-3 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#D4AF37] transition-all"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="block text-xs font-bold text-gray-300">Password</label>
-                  <Link href="/forgot-password" className="text-[11px] text-[#D4AF37] hover:underline">
+                  <label className="block text-xs font-bold text-slate-700">Password</label>
+                  <Link href="/forgot-password" className="text-[11px] text-[#B8860B] font-semibold hover:underline">
                     Forgot Password?
                   </Link>
                 </div>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="password"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl pl-10 pr-4 py-3 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] transition-all"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-3 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-[#D4AF37] transition-all"
                   />
                 </div>
               </div>
@@ -250,7 +250,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black font-black text-sm shadow-gold-md hover:shadow-gold-lg hover:brightness-110 transition-all flex items-center justify-center gap-2 mt-2 disabled:opacity-50"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#997A15] text-white font-black text-sm shadow-gold-md hover:brightness-105 transition-all flex items-center justify-center gap-2 mt-2 disabled:opacity-50"
               >
                 {loading ? (
                   <span>Generating 2FA Code...</span>
@@ -268,7 +268,7 @@ export default function LoginPage() {
           {step === 2 && (
             <form onSubmit={handleStep2VerifyOtp} className="space-y-6">
               <div className="space-y-2">
-                <label className="block text-xs font-bold text-gray-300 text-center">
+                <label className="block text-xs font-bold text-slate-700 text-center">
                   Enter 6-Digit Security Code
                 </label>
                 <div className="flex items-center justify-between gap-2">
@@ -281,7 +281,7 @@ export default function LoginPage() {
                       value={digit}
                       onChange={(e) => handleOtpChange(idx, e.target.value)}
                       onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                      className="w-12 h-14 bg-[#131622] border-2 border-[#D4AF37]/40 rounded-xl text-center font-mono text-xl font-extrabold text-white focus:outline-none focus:border-[#D4AF37] focus:shadow-gold-sm transition-all"
+                      className="w-12 h-14 bg-slate-50 border-2 border-slate-300 rounded-xl text-center font-mono text-xl font-extrabold text-slate-900 focus:bg-white focus:outline-none focus:border-[#D4AF37] transition-all"
                     />
                   ))}
                 </div>
@@ -291,14 +291,14 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="text-gray-400 hover:text-white"
+                  className="text-slate-500 hover:text-slate-900 font-semibold"
                 >
                   ← Back to Login
                 </button>
                 <button
                   type="button"
                   onClick={fillDemoOtp}
-                  className="text-[#D4AF37] font-semibold hover:underline flex items-center gap-1"
+                  className="text-[#B8860B] font-semibold hover:underline flex items-center gap-1"
                 >
                   <RefreshCw className="w-3 h-3" /> Fill Demo Code ({demoOtp})
                 </button>
@@ -307,7 +307,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black font-black text-sm shadow-gold-md hover:shadow-gold-lg hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#997A15] text-white font-black text-sm shadow-gold-md hover:brightness-105 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {loading ? (
                   <span>Verifying Session...</span>

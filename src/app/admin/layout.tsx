@@ -20,12 +20,12 @@ function AdminGuard({ children }: { children: React.ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#08090C] text-gray-100 flex flex-col items-center justify-center p-4 space-y-4">
-        <div className="w-12 h-12 rounded-2xl bg-[#131622] border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] animate-pulse">
+      <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col items-center justify-center p-4 space-y-4">
+        <div className="w-12 h-12 rounded-2xl bg-white border border-[#D4AF37]/40 shadow-md flex items-center justify-center text-[#B8860B] animate-pulse">
           <ShieldCheck className="w-6 h-6" />
         </div>
-        <div className="flex items-center gap-2 text-xs font-bold text-[#D4AF37]">
-          <Loader2 className="w-4 h-4 animate-spin text-[#D4AF37]" />
+        <div className="flex items-center gap-2 text-xs font-bold text-[#B8860B]">
+          <Loader2 className="w-4 h-4 animate-spin text-[#B8860B]" />
           <span>Verifying 2FA Admin Session...</span>
         </div>
       </div>
@@ -37,7 +37,7 @@ function AdminGuard({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#08090C] text-gray-100 antialiased selection:bg-[#D4AF37] selection:text-black">
+    <div className="flex min-h-screen bg-[#F8FAFC] text-slate-900 antialiased selection:bg-[#D4AF37] selection:text-white">
       {/* Left Sticky Sidebar */}
       <Sidebar />
 
@@ -46,9 +46,9 @@ function AdminGuard({ children }: { children: React.ReactNode }) {
         <main className="flex-1 p-8 overflow-y-auto">{children}</main>
 
         {/* Footer Branding */}
-        <footer className="px-8 py-4 bg-[#08090C] border-t border-[#D4AF37]/10 text-center text-xs text-gray-500 flex items-center justify-between">
+        <footer className="px-8 py-4 bg-white border-t border-slate-200 text-center text-xs text-slate-500 flex items-center justify-between shadow-sm">
           <div>© 2026 BH Reels Admin Portal. All rights reserved.</div>
-          <div className="flex items-center gap-4 text-[11px] text-[#C5A059]">
+          <div className="flex items-center gap-4 text-[11px] text-[#B8860B] font-medium">
             <span>Powered by BH Team</span>
             <span>•</span>
             <span>Next.js Fullstack</span>

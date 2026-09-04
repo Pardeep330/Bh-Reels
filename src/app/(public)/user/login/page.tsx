@@ -134,33 +134,33 @@ export default function UserLoginPage() {
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
           <BHLogo size="lg" />
-          <h2 className="text-xl font-extrabold text-white mt-2">
+          <h2 className="text-2xl font-black text-slate-900 mt-3">
             {step === 1 ? "Sign In to BH Reels" : "2-Step Authenticator Verification"}
           </h2>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs sm:text-sm text-slate-600 font-medium">
             {step === 1
               ? "Enter your account email & password to log in"
               : `Enter the 6-digit code from your Authenticator App for ${email}`}
           </p>
         </div>
 
-        <div className="glass-panel p-8 rounded-3xl border border-[#D4AF37]/30 shadow-2xl space-y-6">
+        <div className="bg-white p-8 rounded-3xl border-2 border-[#D4AF37]/40 shadow-xl space-y-6">
           {error && (
-            <div className="p-3.5 rounded-xl bg-red-950/70 border border-red-500/40 text-red-300 text-xs flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" />
+            <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-red-600 mt-0.5 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
           {step === 2 && demoOtp && (
-            <div className="p-3 rounded-xl bg-[#131622] border border-[#D4AF37]/30 flex items-center justify-between text-xs">
-              <span className="text-[#D4AF37] font-semibold flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5" /> Authenticator Code:
+            <div className="p-3 rounded-xl bg-amber-50 border border-amber-300 flex items-center justify-between text-xs">
+              <span className="text-amber-900 font-bold flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-amber-600" /> Authenticator Code:
               </span>
               <button
                 type="button"
                 onClick={fillDemoOtp}
-                className="text-[11px] px-2 py-0.5 rounded bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] font-mono font-bold"
+                className="text-xs px-2.5 py-1 rounded bg-amber-200 border border-amber-400 text-amber-950 font-mono font-bold hover:bg-amber-300 transition-colors"
               >
                 Auto-fill ({demoOtp})
               </button>
@@ -170,34 +170,34 @@ export default function UserLoginPage() {
           {step === 1 ? (
             <form onSubmit={handleStep1} className="space-y-4 text-xs">
               <div>
-                <label className="block text-gray-300 font-bold mb-1.5">Email Address</label>
+                <label className="block text-slate-700 font-bold mb-1.5">Email Address</label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl pl-10 pr-4 py-3 text-xs text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-3 text-xs font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
                   />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-gray-300 font-bold">Password</label>
-                  <Link href="/forgot-password" className="text-[11px] text-[#D4AF37] hover:underline">
+                  <label className="block text-slate-700 font-bold">Password</label>
+                  <Link href="/forgot-password" className="text-xs font-bold text-[#B8860B] hover:underline">
                     Forgot Password?
                   </Link>
                 </div>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="password"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl pl-10 pr-4 py-3 text-xs text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-3 text-xs font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
                   />
                 </div>
               </div>
@@ -205,7 +205,7 @@ export default function UserLoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black font-black text-sm shadow-gold-md hover:brightness-110 flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#997A15] text-white font-extrabold text-xs shadow-gold-md hover:brightness-105 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {loading ? (
                   <span>Checking Account...</span>
@@ -218,8 +218,8 @@ export default function UserLoginPage() {
               </button>
 
               <div className="text-center pt-2">
-                <span className="text-gray-400 text-xs">Don't have an account? </span>
-                <Link href="/user/register" className="text-xs font-bold text-[#D4AF37] hover:underline">
+                <span className="text-slate-600 text-xs font-medium">Don't have an account? </span>
+                <Link href="/user/register" className="text-xs font-extrabold text-[#B8860B] hover:underline">
                   Register Here
                 </Link>
               </div>
@@ -227,7 +227,7 @@ export default function UserLoginPage() {
           ) : (
             <form onSubmit={handleStep2} className="space-y-6">
               <div className="space-y-2">
-                <label className="block text-xs font-bold text-gray-300 text-center">
+                <label className="block text-xs font-bold text-slate-700 text-center">
                   Enter 6-Digit Authenticator App / Security Code
                 </label>
                 <div className="flex items-center justify-between gap-2">
@@ -239,7 +239,7 @@ export default function UserLoginPage() {
                       maxLength={1}
                       value={digit}
                       onChange={(e) => handleOtpChange(idx, e.target.value)}
-                      className="w-12 h-14 bg-[#131622] border-2 border-[#D4AF37]/40 rounded-xl text-center font-mono text-xl font-extrabold text-white focus:outline-none focus:border-[#D4AF37]"
+                      className="w-12 h-14 bg-slate-50 border-2 border-slate-300 rounded-xl text-center font-mono text-xl font-black text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37] transition-all"
                     />
                   ))}
                 </div>
@@ -248,7 +248,7 @@ export default function UserLoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black font-black text-sm shadow-gold-md hover:brightness-110 flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#997A15] text-white font-extrabold text-xs shadow-gold-md hover:brightness-105 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {loading ? (
                   <span>Authenticating Session...</span>

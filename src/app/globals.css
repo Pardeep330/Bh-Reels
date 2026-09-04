@@ -11,8 +11,8 @@
 
 body {
   font-family: var(--font-sans);
-  background-color: #08090C;
-  color: #F3F4F6;
+  background-color: #F8FAFC;
+  color: #0F172A;
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -23,10 +23,10 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #08090C;
+  background: #F8FAFC;
 }
 ::-webkit-scrollbar-thumb {
-  background: #332B12;
+  background: #CBD5E1;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -35,13 +35,13 @@ body {
 
 /* Metallic Gold Text Effect */
 .text-gold-gradient {
-  background: linear-gradient(135deg, #FFE89C 0%, #D4AF37 40%, #AA771C 80%, #F5E08B 100%);
+  background: linear-gradient(135deg, #B8860B 0%, #D4AF37 50%, #997A15 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-gold-shine {
-  background: linear-gradient(90deg, #D4AF37 0%, #FFF5D1 50%, #D4AF37 100%);
+  background: linear-gradient(90deg, #997A15 0%, #D4AF37 50%, #997A15 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -51,27 +51,29 @@ body {
 /* Metallic Gold Border & Badge */
 .gold-border-glow {
   border: 1px solid rgba(212, 175, 55, 0.3);
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.12);
   transition: all 0.3s ease;
 }
 
 .gold-border-glow:hover {
   border-color: rgba(212, 175, 55, 0.6);
-  box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.22);
 }
 
 .glass-panel {
-  background: rgba(19, 22, 34, 0.75);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.06);
 }
 
 .glass-panel-hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .glass-panel-hover:hover {
-  background: rgba(24, 27, 43, 0.85);
-  border-color: rgba(212, 175, 55, 0.35);
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(212, 175, 55, 0.45);
+  box-shadow: 0 15px 35px -10px rgba(212, 175, 55, 0.18);
   transform: translateY(-2px);
 }

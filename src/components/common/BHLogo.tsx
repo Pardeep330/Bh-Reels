@@ -26,14 +26,14 @@ export const BHLogo: React.FC<BHLogoProps> = ({ size = "md", showText = true }) 
       <div className={`relative ${dimensions} flex items-center justify-center`}>
         {/* Outer Glowing Ring */}
         <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#B38728] via-[#FDF0A6] to-[#AA771C] p-[2px] shadow-gold-md group-hover:shadow-gold-lg transition-all duration-300">
-          <div className="w-full h-full bg-[#08090C] rounded-full flex items-center justify-center p-1 relative overflow-hidden">
+          <div className="w-full h-full bg-white rounded-full flex items-center justify-center p-1 relative overflow-hidden">
             {/* Inner Metallic Shimmer */}
             <div className="absolute inset-0 bg-gold-radial opacity-40 group-hover:opacity-70 transition-opacity" />
 
             {/* Custom SVG Icon - Inspired by the logo badge */}
             <svg
               viewBox="0 0 100 100"
-              className="w-full h-full text-[#D4AF37] relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+              className="w-full h-full text-[#D4AF37] relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
               fill="currentColor"
             >
               <defs>
@@ -75,9 +75,9 @@ export const BHLogo: React.FC<BHLogoProps> = ({ size = "md", showText = true }) 
       {showText && (
         <div className="flex flex-col leading-none">
           <div className={`font-extrabold tracking-wider text-gold-gradient ${textSize} font-serif`}>
-            BH <span className="text-white font-sans font-black">REELS</span>
+            BH <span className="text-slate-900 font-sans font-black">REELS</span>
           </div>
-          <span className="text-[10px] tracking-[0.25em] text-[#C5A059] uppercase font-semibold mt-0.5">
+          <span className="text-[10px] tracking-[0.25em] text-[#B8860B] uppercase font-semibold mt-0.5">
             INFLUENCER NETWORK
           </span>
         </div>

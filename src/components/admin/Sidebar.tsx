@@ -60,18 +60,18 @@ export const Sidebar: React.FC = () => {
   const { logout, user } = useAuth();
 
   return (
-    <aside className="w-72 bg-[#0E1017] border-r border-[#D4AF37]/20 flex flex-col h-screen sticky top-0 z-40 select-none shadow-2xl">
+    <aside className="w-72 bg-white border-r border-slate-200 flex flex-col h-screen sticky top-0 z-40 select-none shadow-sm">
       {/* Brand Logo Header */}
-      <div className="p-6 border-b border-[#D4AF37]/15 flex items-center justify-between">
+      <div className="p-6 border-b border-slate-200 flex items-center justify-between">
         <Link href="/admin/dashboard">
           <BHLogo size="md" />
         </Link>
       </div>
 
       {/* Security Status Badge */}
-      <div className="px-6 py-3 bg-[#131622] border-b border-[#D4AF37]/10 flex items-center justify-between">
-        <div className="flex items-center gap-2 text-xs text-[#C5A059]">
-          <ShieldCheck className="w-4 h-4 text-[#D4AF37]" />
+      <div className="px-6 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+        <div className="flex items-center gap-2 text-xs text-slate-600 font-medium">
+          <ShieldCheck className="w-4 h-4 text-[#B8860B]" />
           <span>2-Step Auth Active</span>
         </div>
         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
@@ -79,7 +79,7 @@ export const Sidebar: React.FC = () => {
 
       {/* Main Navigation Links */}
       <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
-        <div className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider px-3 mb-2">
+        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">
           Admin Portal Navigation
         </div>
 
@@ -93,14 +93,14 @@ export const Sidebar: React.FC = () => {
               href={item.href}
               className={`flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 group ${
                 isActive
-                  ? "bg-gradient-to-r from-[#D4AF37]/20 to-transparent border-l-4 border-[#D4AF37] text-white shadow-gold-sm font-semibold"
-                  : "text-gray-400 hover:text-white hover:bg-[#181B2B]"
+                  ? "bg-gradient-to-r from-[#D4AF37]/15 to-transparent border-l-4 border-[#B8860B] text-slate-900 shadow-sm font-semibold"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
               }`}
             >
               <div className="flex items-center gap-3">
                 <Icon
                   className={`w-5 h-5 transition-colors ${
-                    isActive ? "text-[#D4AF37]" : "text-gray-400 group-hover:text-[#D4AF37]"
+                    isActive ? "text-[#B8860B]" : "text-slate-400 group-hover:text-[#B8860B]"
                   }`}
                 />
                 <span className="text-sm font-medium">{item.name}</span>
@@ -110,8 +110,8 @@ export const Sidebar: React.FC = () => {
                 <span
                   className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
                     isActive
-                      ? "bg-[#D4AF37] text-black"
-                      : "bg-[#1E2230] text-[#C5A059] group-hover:bg-[#D4AF37]/20"
+                      ? "bg-[#D4AF37] text-white"
+                      : "bg-slate-200 text-slate-700 group-hover:bg-[#D4AF37]/20"
                   }`}
                 >
                   {item.badge}
@@ -123,25 +123,25 @@ export const Sidebar: React.FC = () => {
       </nav>
 
       {/* Admin User Footer Menu */}
-      <div className="p-4 border-t border-[#D4AF37]/15 bg-[#08090C]">
-        <div className="flex items-center gap-3 p-2 rounded-xl bg-[#131622] border border-[#D4AF37]/20 mb-3">
+      <div className="p-4 border-t border-slate-200 bg-slate-50">
+        <div className="flex items-center gap-3 p-2 rounded-xl bg-white border border-slate-200 shadow-sm mb-3">
           <img
             src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300"}
             alt={user?.name || "Admin"}
             className="w-10 h-10 rounded-full object-cover border border-[#D4AF37]"
           />
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-bold text-white truncate flex items-center gap-1">
+            <div className="text-sm font-bold text-slate-900 truncate flex items-center gap-1">
               {user?.name || "BH Admin"}
-              <Sparkles className="w-3 h-3 text-[#D4AF37] inline" />
+              <Sparkles className="w-3 h-3 text-[#B8860B] inline" />
             </div>
-            <div className="text-xs text-[#C5A059] truncate">{user?.email || "admin@bhreels.com"}</div>
+            <div className="text-xs text-slate-500 truncate">{user?.email || "admin@bhreels.com"}</div>
           </div>
         </div>
 
         <button
           onClick={logout}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-950/40 hover:bg-red-900/60 border border-red-500/30 text-red-300 text-xs font-semibold transition-colors"
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 text-xs font-semibold transition-colors"
         >
           <LogOut className="w-4 h-4" />
           <span>Sign Out Admin</span>

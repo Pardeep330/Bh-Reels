@@ -40,38 +40,38 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#08090C] text-gray-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
           <BHLogo size="lg" />
-          <h2 className="text-xl font-extrabold text-white mt-4">Forgot Admin Password</h2>
-          <p className="text-xs text-gray-400">Enter your email address to receive password reset OTP</p>
+          <h2 className="text-xl font-extrabold text-slate-900 mt-4">Forgot Admin Password</h2>
+          <p className="text-xs text-slate-500">Enter your email address to receive password reset OTP</p>
         </div>
 
-        <div className="glass-panel p-8 rounded-3xl border border-[#D4AF37]/30 shadow-2xl space-y-6">
+        <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
           {error && (
-            <div className="p-3 rounded-xl bg-red-950/60 border border-red-500/30 text-red-300 text-xs flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-red-400" /> {error}
+            <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-red-500" /> {error}
             </div>
           )}
 
           {message && (
-            <div className="p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" /> {message}
+            <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" /> {message}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4 text-xs">
             <div>
-              <label className="block text-gray-300 font-bold mb-1.5">Registered Email</label>
+              <label className="block text-slate-700 font-bold mb-1.5">Registered Email</label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl pl-10 pr-4 py-3 text-xs text-white focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-3 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-[#D4AF37]"
                 />
               </div>
             </div>
@@ -79,14 +79,14 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black font-extrabold text-xs shadow-gold-md hover:brightness-110 flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#997A15] text-white font-extrabold text-xs shadow-gold-md hover:brightness-105 flex items-center justify-center gap-2"
             >
               <span>{loading ? "Sending..." : "Send Reset Code"}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 
             <div className="text-center pt-2">
-              <Link href="/login" className="text-xs text-gray-400 hover:text-white">
+              <Link href="/login" className="text-xs text-slate-500 hover:text-slate-900 font-medium">
                 ← Return to Login
               </Link>
             </div>

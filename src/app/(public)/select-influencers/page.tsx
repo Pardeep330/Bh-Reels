@@ -170,37 +170,37 @@ export default function SelectInfluencersPage() {
 
         {/* ── Header ─────────────────────────────────── */}
         <div className="text-center space-y-3 px-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#131622] border border-[#D4AF37]/30 text-[10px] sm:text-xs font-bold text-[#D4AF37]">
-            <Calculator className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D4AF37]" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-xs font-bold text-amber-900 shadow-sm">
+            <Calculator className="w-4 h-4 text-amber-600" />
             Producer Reel Package Estimator
           </div>
-          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">
             Select Influencers &amp; Get{" "}
             <span className="text-gold-gradient">Total Package Price</span>
           </h1>
-          <p className="text-xs sm:text-sm text-gray-400 max-w-xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-600 max-w-xl mx-auto leading-relaxed font-medium">
             Select creators for your campaign. Individual rates are private — our engine calculates
             the grand total before UPI checkout.
           </p>
         </div>
 
         {/* ── Search & Filter Bar ─────────────────────── */}
-        <div className="glass-panel p-4 sm:p-5 rounded-2xl space-y-3">
+        <div className="bg-white border border-slate-200 shadow-sm p-4 sm:p-5 rounded-2xl space-y-3">
           {/* Search Row */}
           <div className="flex items-center gap-3">
             <div className="relative flex-1">
-              <Search className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Search name, handle, category..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-[#0E1017] border border-[#D4AF37]/25 rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#D4AF37] transition-colors"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-xs font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
               />
             </div>
             {selectedIds.length > 0 && (
-              <div className="shrink-0 flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-[#D4AF37]/10 border border-[#D4AF37]/40 text-[#D4AF37] font-bold text-xs">
-                <CheckCircle2 className="w-3.5 h-3.5" />
+              <div className="shrink-0 flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 font-extrabold text-xs">
+                <CheckCircle2 className="w-4 h-4 text-amber-600" />
                 <span className="hidden sm:inline">{selectedIds.length} Selected</span>
                 <span className="sm:hidden">{selectedIds.length}</span>
               </div>
@@ -208,19 +208,19 @@ export default function SelectInfluencersPage() {
           </div>
 
           {/* Category Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
-            <div className="shrink-0 flex items-center gap-1 text-[10px] text-gray-500 font-semibold pr-1">
-              <Filter className="w-3 h-3 text-[#D4AF37]" />
+          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1">
+            <div className="shrink-0 flex items-center gap-1 text-xs text-slate-500 font-bold pr-1">
+              <Filter className="w-3.5 h-3.5 text-amber-600" />
               <span className="hidden sm:inline">Niche:</span>
             </div>
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`shrink-0 px-2.5 py-1.5 rounded-lg text-[10px] sm:text-xs font-semibold whitespace-nowrap transition-all ${
+                className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
                   selectedCategory === cat
-                    ? "bg-[#D4AF37] text-black"
-                    : "bg-[#0E1017] border border-[#D4AF37]/20 text-gray-400 hover:border-[#D4AF37]/50 hover:text-gray-200"
+                    ? "bg-[#D4AF37] text-slate-950 shadow-sm"
+                    : "bg-slate-100 border border-slate-200 text-slate-700 hover:bg-slate-200 hover:text-slate-900"
                 }`}
               >
                 {cat}
@@ -236,13 +236,13 @@ export default function SelectInfluencersPage() {
           <div className="lg:col-span-2">
             {/* Results count */}
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                <Video className="w-4 h-4 text-[#D4AF37]" />
+              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <Video className="w-4 h-4 text-amber-600" />
                 Select Creators
-                <span className="text-gray-500 font-normal">({selectedIds.length} selected)</span>
+                <span className="text-slate-500 text-xs font-medium">({selectedIds.length} selected)</span>
               </h2>
               {!loading && (
-                <span className="text-[11px] text-gray-500">{filtered.length} creators</span>
+                <span className="text-xs text-slate-500 font-medium">{filtered.length} creators</span>
               )}
             </div>
 
@@ -250,29 +250,29 @@ export default function SelectInfluencersPage() {
               /* Skeleton */
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[...Array(4)].map((_, i) => (
-                  <div key={i} className="glass-panel p-5 rounded-2xl space-y-4 animate-pulse">
+                  <div key={i} className="bg-white border border-slate-200 p-5 rounded-2xl space-y-4 animate-pulse">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-[#1E2230]" />
+                      <div className="w-12 h-12 rounded-full bg-slate-200" />
                       <div className="flex-1 space-y-2">
-                        <div className="h-3 bg-[#1E2230] rounded w-2/3" />
-                        <div className="h-2 bg-[#1E2230] rounded w-1/2" />
+                        <div className="h-3 bg-slate-200 rounded w-2/3" />
+                        <div className="h-2 bg-slate-200 rounded w-1/2" />
                       </div>
                     </div>
-                    <div className="h-2 bg-[#1E2230] rounded w-full" />
-                    <div className="h-10 bg-[#1E2230] rounded-xl w-full" />
-                    <div className="h-8 bg-[#1E2230] rounded-xl w-full" />
+                    <div className="h-2 bg-slate-200 rounded w-full" />
+                    <div className="h-10 bg-slate-200 rounded-xl w-full" />
+                    <div className="h-8 bg-slate-200 rounded-xl w-full" />
                   </div>
                 ))}
               </div>
             ) : filtered.length === 0 ? (
-              <div className="py-16 text-center space-y-3">
-                <div className="w-14 h-14 rounded-full bg-[#131622] border border-[#D4AF37]/20 flex items-center justify-center mx-auto">
-                  <Search className="w-6 h-6 text-gray-600" />
+              <div className="py-16 bg-white border border-slate-200 rounded-2xl text-center space-y-3">
+                <div className="w-14 h-14 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto">
+                  <Search className="w-6 h-6 text-slate-400" />
                 </div>
-                <p className="text-gray-400 text-sm">No creators found</p>
+                <p className="text-slate-600 font-medium text-sm">No creators found</p>
                 <button
                   onClick={() => { setSearch(""); setSelectedCategory("All"); }}
-                  className="text-[#D4AF37] text-xs underline underline-offset-2"
+                  className="text-[#B8860B] font-bold text-xs underline underline-offset-2 hover:text-[#997A15]"
                 >
                   Clear filters
                 </button>
@@ -286,10 +286,10 @@ export default function SelectInfluencersPage() {
                   return (
                     <div
                       key={inf.id}
-                      className={`glass-panel rounded-2xl overflow-hidden flex flex-col transition-all duration-200 ${
+                      className={`bg-white rounded-2xl overflow-hidden flex flex-col transition-all duration-200 ${
                         isSelected
-                          ? "border-2 border-[#D4AF37] shadow-gold-sm"
-                          : "border border-[#D4AF37]/15 hover:border-[#D4AF37]/40"
+                          ? "border-2 border-[#D4AF37] shadow-md ring-2 ring-[#D4AF37]/20"
+                          : "border border-slate-200 hover:border-slate-300 shadow-sm hover:shadow"
                       }`}
                     >
                       {/* Card Body */}
@@ -301,55 +301,55 @@ export default function SelectInfluencersPage() {
                               <img
                                 src={inf.avatar}
                                 alt={inf.name}
-                                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-[#D4AF37]/60"
+                                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-[#D4AF37]"
                                 onError={(e) => {
                                   (e.target as HTMLImageElement).src =
                                     "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300";
                                 }}
                               />
                               {isSelected && (
-                                <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#D4AF37] flex items-center justify-center">
-                                  <CheckCircle2 className="w-3 h-3 text-black fill-black" />
+                                <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#D4AF37] flex items-center justify-center shadow">
+                                  <CheckCircle2 className="w-3 h-3 text-slate-950 fill-slate-950" />
                                 </div>
                               )}
                             </div>
                             <div className="min-w-0">
-                              <h3 className="font-extrabold text-white text-sm truncate leading-tight">
+                              <h3 className="font-extrabold text-slate-900 text-sm truncate leading-tight">
                                 {inf.name}
                               </h3>
-                              <div className="text-[11px] font-mono text-[#D4AF37] flex items-center gap-1 mt-0.5">
+                              <div className="text-[11px] font-mono text-[#B8860B] font-bold flex items-center gap-1 mt-0.5">
                                 <Instagram className="w-3 h-3 shrink-0" />
                                 <span className="truncate">{inf.instaHandle}</span>
                               </div>
                             </div>
                           </div>
-                          <span className="shrink-0 px-2 py-0.5 rounded-md bg-[#1E2230] text-[9px] font-bold text-[#D4AF37] whitespace-nowrap max-w-[80px] text-right leading-tight">
+                          <span className="shrink-0 px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[10px] font-bold text-slate-700 whitespace-nowrap max-w-[90px] text-right leading-tight">
                             {inf.category}
                           </span>
                         </div>
 
                         {/* Bio */}
                         {inf.bio && (
-                          <p className="text-[11px] text-gray-500 line-clamp-2 leading-relaxed">
+                          <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed font-normal">
                             {inf.bio}
                           </p>
                         )}
 
                         {/* Stats */}
-                        <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-[#0E1017] border border-[#D4AF37]/10 text-center">
+                        <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
                           <div>
-                            <div className="text-[9px] text-gray-500 uppercase font-semibold tracking-wider">
+                            <div className="text-[9px] text-slate-500 uppercase font-bold tracking-wider">
                               Followers
                             </div>
-                            <div className="text-sm font-black text-white mt-0.5">
+                            <div className="text-sm font-black text-slate-900 mt-0.5">
                               {formatNumber(inf.followersCount)}
                             </div>
                           </div>
                           <div>
-                            <div className="text-[9px] text-gray-500 uppercase font-semibold tracking-wider">
+                            <div className="text-[9px] text-slate-500 uppercase font-bold tracking-wider">
                               Engagement
                             </div>
-                            <div className="text-sm font-black text-emerald-400 mt-0.5">
+                            <div className="text-sm font-black text-emerald-600 mt-0.5">
                               {inf.engagementRate}%
                             </div>
                           </div>
@@ -357,21 +357,21 @@ export default function SelectInfluencersPage() {
 
                         {/* Reel counter */}
                         {isSelected && (
-                          <div className="flex items-center justify-center gap-3 bg-[#0E1017] border border-[#D4AF37]/25 rounded-xl py-2">
+                          <div className="flex items-center justify-center gap-3 bg-amber-50 border border-amber-300 rounded-xl py-2">
                             <button
                               type="button"
                               onClick={() => updateReelsCount(inf.id, -1)}
-                              className="w-7 h-7 rounded-lg bg-[#1E2230] flex items-center justify-center text-gray-300 hover:text-white hover:bg-[#252A3D] transition-colors"
+                              className="w-7 h-7 rounded-lg bg-white border border-amber-300 shadow-sm flex items-center justify-center text-slate-700 hover:text-slate-950 hover:bg-amber-100 transition-colors"
                             >
                               <Minus className="w-3 h-3" />
                             </button>
-                            <span className="text-xs font-bold text-white min-w-[64px] text-center">
+                            <span className="text-xs font-black text-amber-950 min-w-[64px] text-center">
                               {reels} Reel{reels > 1 ? "s" : ""}
                             </span>
                             <button
                               type="button"
                               onClick={() => updateReelsCount(inf.id, 1)}
-                              className="w-7 h-7 rounded-lg bg-[#1E2230] flex items-center justify-center text-gray-300 hover:text-white hover:bg-[#252A3D] transition-colors"
+                              className="w-7 h-7 rounded-lg bg-white border border-amber-300 shadow-sm flex items-center justify-center text-slate-700 hover:text-slate-950 hover:bg-amber-100 transition-colors"
                             >
                               <Plus className="w-3 h-3" />
                             </button>
@@ -380,12 +380,12 @@ export default function SelectInfluencersPage() {
                       </div>
 
                       {/* Card Footer */}
-                      <div className="px-4 sm:px-5 py-3 border-t border-[#D4AF37]/10 flex items-center justify-between gap-2">
+                      <div className="px-4 sm:px-5 py-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between gap-2">
                         <a
                           href={inf.instaProfileUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-[11px] font-bold text-[#D4AF37] hover:underline flex items-center gap-1 shrink-0"
+                          className="text-xs font-bold text-[#B8860B] hover:underline flex items-center gap-1 shrink-0"
                         >
                           View Profile
                           <ExternalLink className="w-3 h-3" />
@@ -394,10 +394,10 @@ export default function SelectInfluencersPage() {
                         <button
                           type="button"
                           onClick={() => toggleSelect(inf.id)}
-                          className={`px-3 py-2 rounded-xl font-extrabold text-[11px] transition-all ${
+                          className={`px-3.5 py-2 rounded-xl font-extrabold text-xs transition-all ${
                             isSelected
-                              ? "bg-[#D4AF37]/15 border border-[#D4AF37]/60 text-[#D4AF37]"
-                              : "bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black shadow-gold-sm hover:brightness-105"
+                              ? "bg-amber-100 border border-amber-400 text-amber-900"
+                              : "bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#997A15] text-white shadow-gold-sm hover:brightness-105"
                           }`}
                         >
                           {isSelected ? "✓ Selected" : "Select for Package"}
@@ -412,13 +412,13 @@ export default function SelectInfluencersPage() {
 
           {/* ── Right Summary Panel (desktop only) ──── */}
           <div className="hidden lg:block sticky top-24">
-            <div className="glass-panel rounded-3xl border-2 border-[#D4AF37]/40 shadow-2xl overflow-hidden">
+            <div className="bg-white rounded-3xl border-2 border-[#D4AF37] shadow-xl overflow-hidden">
               {/* Panel Header */}
-              <div className="p-5 border-b border-[#D4AF37]/20 flex items-center justify-between">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-[#D4AF37]" /> Package Summary
+              <div className="p-5 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+                <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-600" /> Package Summary
                 </h3>
-                <span className="text-[9px] text-[#D4AF37] font-bold font-mono border border-[#D4AF37]/30 px-2 py-0.5 rounded bg-[#D4AF37]/10 tracking-widest">
+                <span className="text-[10px] text-amber-900 font-bold font-mono border border-amber-300 px-2 py-0.5 rounded bg-amber-100 tracking-wider">
                   CONFIDENTIAL
                 </span>
               </div>
@@ -427,7 +427,7 @@ export default function SelectInfluencersPage() {
                 {/* Selected Breakdown */}
                 <div className="space-y-2 max-h-40 overflow-y-auto">
                   {selectedIds.length === 0 ? (
-                    <div className="text-center py-5 text-xs text-gray-500 italic">
+                    <div className="text-center py-5 text-xs text-slate-500 font-medium italic">
                       Select creators to calculate total
                     </div>
                   ) : (
@@ -437,40 +437,40 @@ export default function SelectInfluencersPage() {
                       return (
                         <div
                           key={id}
-                          className="flex items-center justify-between text-xs p-2.5 rounded-xl bg-[#0E1017] border border-[#D4AF37]/10"
+                          className="flex items-center justify-between text-xs p-2.5 rounded-xl bg-slate-50 border border-slate-200"
                         >
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
                             <img
                               src={creator?.avatar}
                               alt={creator?.name}
-                              className="w-7 h-7 rounded-full object-cover border border-[#D4AF37]/40 shrink-0"
+                              className="w-7 h-7 rounded-full object-cover border border-[#D4AF37] shrink-0"
                             />
-                            <div>
-                              <div className="font-bold text-white leading-tight">{creator?.name}</div>
-                              <div className="text-[10px] text-gray-500 font-mono">{creator?.instaHandle}</div>
+                            <div className="min-w-0">
+                              <div className="font-bold text-slate-900 truncate leading-tight">{creator?.name}</div>
+                              <div className="text-[10px] text-slate-500 font-mono truncate">{creator?.instaHandle}</div>
                             </div>
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
-                            <div className="flex items-center gap-1 bg-[#131622] border border-[#D4AF37]/20 rounded-lg px-1.5 py-1">
+                            <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-lg px-1.5 py-1 shadow-sm">
                               <button
                                 onClick={() => updateReelsCount(id, -1)}
-                                className="text-gray-400 hover:text-white transition-colors"
+                                className="text-slate-500 hover:text-slate-900 transition-colors"
                               >
                                 <Minus className="w-2.5 h-2.5" />
                               </button>
-                              <span className="text-[#D4AF37] font-bold text-[10px] min-w-[28px] text-center">
+                              <span className="text-amber-900 font-bold text-[10px] min-w-[28px] text-center">
                                 {count}R
                               </span>
                               <button
                                 onClick={() => updateReelsCount(id, 1)}
-                                className="text-gray-400 hover:text-white transition-colors"
+                                className="text-slate-500 hover:text-slate-900 transition-colors"
                               >
                                 <Plus className="w-2.5 h-2.5" />
                               </button>
                             </div>
                             <button
                               onClick={() => toggleSelect(id)}
-                              className="text-red-400 hover:text-red-300 transition-colors"
+                              className="text-red-500 hover:text-red-700 transition-colors"
                             >
                               <X className="w-3.5 h-3.5" />
                             </button>
@@ -482,20 +482,20 @@ export default function SelectInfluencersPage() {
                 </div>
 
                 {/* Grand Total */}
-                <div className="p-4 rounded-2xl bg-gradient-to-br from-[#181B2B] to-[#0E1017] border border-[#D4AF37]/30">
-                  <div className="flex items-center justify-between text-[11px] text-gray-400 mb-1">
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 text-white shadow-md">
+                  <div className="flex items-center justify-between text-xs text-amber-100 font-semibold mb-1">
                     <span>Package Estimate</span>
-                    <span className="text-gray-300 font-bold">{totalReelsCount} Reel{totalReelsCount !== 1 ? "s" : ""}</span>
+                    <span className="text-white font-bold">{totalReelsCount} Reel{totalReelsCount !== 1 ? "s" : ""}</span>
                   </div>
-                  <div className="text-2xl sm:text-3xl font-black text-gold-gradient">
+                  <div className="text-2xl sm:text-3xl font-black text-white">
                     {formatCurrency(totalEstimatedPrice)}
                   </div>
-                  <div className="text-[10px] text-gray-500 mt-1">Individual rates are confidential</div>
+                  <div className="text-[10px] text-amber-100 mt-1 font-medium">Individual rates are confidential</div>
                 </div>
 
                 {/* Form */}
                 <form onSubmit={handleProceedToPayment} className="space-y-3">
-                  <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pt-1">
+                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider pt-1">
                     Producer / Client Info
                   </div>
 
@@ -505,16 +505,16 @@ export default function SelectInfluencersPage() {
                     { label: "Phone *", key: "producerPhone", type: "text", placeholder: "+91 98765 43210", Icon: Phone },
                   ].map(({ label, key, type, placeholder, Icon }) => (
                     <div key={key}>
-                      <label className="block text-gray-400 text-[11px] font-semibold mb-1">{label}</label>
+                      <label className="block text-slate-700 text-xs font-bold mb-1">{label}</label>
                       <div className="relative">
-                        <Icon className="w-3.5 h-3.5 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                        <Icon className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
                           type={type}
                           required
                           placeholder={placeholder}
                           value={producerDetails[key as keyof typeof producerDetails]}
                           onChange={(e) => setProducerDetails({ ...producerDetails, [key]: e.target.value })}
-                          className="w-full bg-[#0E1017] border border-[#D4AF37]/25 rounded-xl pl-8 pr-3 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#D4AF37] transition-colors"
+                          className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-8 pr-3 py-2.5 text-xs font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
                         />
                       </div>
                     </div>
@@ -523,14 +523,14 @@ export default function SelectInfluencersPage() {
                   <button
                     type="submit"
                     disabled={selectedIds.length === 0}
-                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black font-black text-sm shadow-gold-md hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed mt-1"
+                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#997A15] text-white font-black text-sm shadow-gold-md hover:brightness-105 transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed mt-1"
                   >
                     <span>Proceed to UPI Payment</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
 
                   {selectedIds.length === 0 && (
-                    <p className="text-center text-[10px] text-gray-600">Select at least one creator to continue</p>
+                    <p className="text-center text-[10px] text-slate-500 font-medium">Select at least one creator to continue</p>
                   )}
                 </form>
               </div>
@@ -544,42 +544,42 @@ export default function SelectInfluencersPage() {
         {/* Collapsed bar */}
         {!mobilePanelOpen && (
           <div
-            className="mx-3 mb-3 flex items-center justify-between gap-3 bg-[#131622]/95 backdrop-blur-xl border border-[#D4AF37]/40 rounded-2xl px-4 py-3 shadow-2xl cursor-pointer"
+            className="mx-3 mb-3 flex items-center justify-between gap-3 bg-white/95 backdrop-blur-xl border-2 border-[#D4AF37] rounded-2xl px-4 py-3 shadow-xl cursor-pointer"
             onClick={() => setMobilePanelOpen(true)}
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+              <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center shrink-0">
+                <Sparkles className="w-4 h-4 text-amber-600" />
               </div>
               <div>
-                <div className="text-[10px] text-gray-400 leading-none">
+                <div className="text-[10px] text-slate-500 font-bold leading-none">
                   {selectedIds.length === 0
                     ? "No creators selected"
                     : `${selectedIds.length} creator${selectedIds.length > 1 ? "s" : ""} • ${totalReelsCount} reel${totalReelsCount !== 1 ? "s" : ""}`}
                 </div>
-                <div className="text-base font-black text-gold-gradient leading-tight">
+                <div className="text-base font-black text-slate-900 leading-tight">
                   {formatCurrency(totalEstimatedPrice)}
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] text-gray-400 hidden sm:block">Tap for details</span>
-              <ChevronUp className="w-4 h-4 text-[#D4AF37]" />
+              <span className="text-[10px] text-slate-500 font-bold hidden sm:block">Tap for details</span>
+              <ChevronUp className="w-4 h-4 text-amber-600" />
             </div>
           </div>
         )}
 
         {/* Expanded panel */}
         {mobilePanelOpen && (
-          <div className="mx-0 bg-[#0B0D14]/97 backdrop-blur-xl border-t border-[#D4AF37]/30 rounded-t-3xl shadow-2xl max-h-[85vh] overflow-y-auto">
+          <div className="mx-0 bg-white/98 backdrop-blur-xl border-t-2 border-[#D4AF37] rounded-t-3xl shadow-2xl max-h-[85vh] overflow-y-auto">
             {/* Drag handle + close */}
-            <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-[#D4AF37]/15">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#D4AF37]" /> Package Summary
+            <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-slate-200 bg-slate-50">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-600" /> Package Summary
               </h3>
               <button
                 onClick={() => setMobilePanelOpen(false)}
-                className="w-7 h-7 rounded-full bg-[#1E2230] flex items-center justify-center text-gray-400 hover:text-white"
+                className="w-7 h-7 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900"
               >
                 <ChevronDown className="w-4 h-4" />
               </button>
@@ -589,7 +589,7 @@ export default function SelectInfluencersPage() {
               {/* Selected Breakdown */}
               <div className="space-y-2">
                 {selectedIds.length === 0 ? (
-                  <div className="text-center py-5 text-xs text-gray-500 italic">
+                  <div className="text-center py-5 text-xs text-slate-500 italic">
                     Select creators above to calculate total
                   </div>
                 ) : (
@@ -599,30 +599,30 @@ export default function SelectInfluencersPage() {
                     return (
                       <div
                         key={id}
-                        className="flex items-center justify-between text-xs p-2.5 rounded-xl bg-[#0E1017] border border-[#D4AF37]/10"
+                        className="flex items-center justify-between text-xs p-2.5 rounded-xl bg-slate-50 border border-slate-200"
                       >
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
                           <img
                             src={creator?.avatar}
                             alt={creator?.name}
-                            className="w-7 h-7 rounded-full object-cover border border-[#D4AF37]/40 shrink-0"
+                            className="w-7 h-7 rounded-full object-cover border border-[#D4AF37] shrink-0"
                           />
-                          <div>
-                            <div className="font-bold text-white">{creator?.name}</div>
-                            <div className="text-[10px] text-gray-500 font-mono">{creator?.instaHandle}</div>
+                          <div className="min-w-0">
+                            <div className="font-bold text-slate-900 truncate">{creator?.name}</div>
+                            <div className="text-[10px] text-slate-500 font-mono truncate">{creator?.instaHandle}</div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center gap-1 bg-[#131622] border border-[#D4AF37]/20 rounded-lg px-1.5 py-1">
-                            <button onClick={() => updateReelsCount(id, -1)} className="text-gray-400">
+                        <div className="flex items-center gap-2 shrink-0">
+                          <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-lg px-1.5 py-1 shadow-sm">
+                            <button onClick={() => updateReelsCount(id, -1)} className="text-slate-500 hover:text-slate-900">
                               <Minus className="w-2.5 h-2.5" />
                             </button>
-                            <span className="text-[#D4AF37] font-bold text-[10px] min-w-[24px] text-center">{count}R</span>
-                            <button onClick={() => updateReelsCount(id, 1)} className="text-gray-400">
+                            <span className="text-amber-900 font-bold text-[10px] min-w-[24px] text-center">{count}R</span>
+                            <button onClick={() => updateReelsCount(id, 1)} className="text-slate-500 hover:text-slate-900">
                               <Plus className="w-2.5 h-2.5" />
                             </button>
                           </div>
-                          <button onClick={() => toggleSelect(id)} className="text-red-400">
+                          <button onClick={() => toggleSelect(id)} className="text-red-500 hover:text-red-700">
                             <X className="w-3.5 h-3.5" />
                           </button>
                         </div>
@@ -633,17 +633,17 @@ export default function SelectInfluencersPage() {
               </div>
 
               {/* Total */}
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-[#181B2B] to-[#0E1017] border border-[#D4AF37]/30">
-                <div className="flex items-center justify-between text-[11px] text-gray-400 mb-1">
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 text-white shadow-md">
+                <div className="flex items-center justify-between text-xs text-amber-100 font-semibold mb-1">
                   <span>Package Estimate</span>
-                  <span className="text-gray-300 font-bold">{totalReelsCount} Reel{totalReelsCount !== 1 ? "s" : ""}</span>
+                  <span className="text-white font-bold">{totalReelsCount} Reel{totalReelsCount !== 1 ? "s" : ""}</span>
                 </div>
-                <div className="text-2xl font-black text-gold-gradient">{formatCurrency(totalEstimatedPrice)}</div>
+                <div className="text-2xl font-black text-white">{formatCurrency(totalEstimatedPrice)}</div>
               </div>
 
               {/* Form */}
               <form onSubmit={handleProceedToPayment} className="space-y-3">
-                <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                   Producer / Client Info
                 </div>
 
@@ -653,16 +653,16 @@ export default function SelectInfluencersPage() {
                   { label: "Phone *", key: "producerPhone", type: "text", placeholder: "+91 98765 43210", Icon: Phone },
                 ].map(({ label, key, type, placeholder, Icon }) => (
                   <div key={key}>
-                    <label className="block text-gray-400 text-[11px] font-semibold mb-1">{label}</label>
+                    <label className="block text-slate-700 text-xs font-bold mb-1">{label}</label>
                     <div className="relative">
-                      <Icon className="w-3.5 h-3.5 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <Icon className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                       <input
                         type={type}
                         required
                         placeholder={placeholder}
                         value={producerDetails[key as keyof typeof producerDetails]}
                         onChange={(e) => setProducerDetails({ ...producerDetails, [key]: e.target.value })}
-                        className="w-full bg-[#0E1017] border border-[#D4AF37]/25 rounded-xl pl-8 pr-3 py-3 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#D4AF37] transition-colors"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-8 pr-3 py-3 text-xs font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
                       />
                     </div>
                   </div>
@@ -671,7 +671,7 @@ export default function SelectInfluencersPage() {
                 <button
                   type="submit"
                   disabled={selectedIds.length === 0}
-                  className="w-full py-4 rounded-xl bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black font-black text-sm shadow-gold-md hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="w-full py-4 rounded-xl bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#997A15] text-white font-black text-sm shadow-gold-md hover:brightness-105 transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <span>Proceed to UPI Payment</span>
                   <ArrowRight className="w-4 h-4" />

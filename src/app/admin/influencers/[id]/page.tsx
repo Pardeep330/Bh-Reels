@@ -92,7 +92,7 @@ export default function InfluencerDetailPage() {
     return (
       <div className="space-y-6">
         <Header title="Influencer Profile" subtitle="Loading creator analytics..." />
-        <div className="glass-panel p-12 rounded-2xl text-center text-gray-400 text-xs">
+        <div className="bg-white p-12 rounded-2xl border border-slate-200 text-center text-slate-500 font-semibold text-xs">
           Loading creator metrics from MongoDB...
         </div>
       </div>
@@ -103,13 +103,13 @@ export default function InfluencerDetailPage() {
     return (
       <div className="space-y-6">
         <Header title="Influencer Profile" subtitle="Creator details" />
-        <div className="glass-panel p-12 rounded-2xl text-center space-y-4">
-          <Video className="w-12 h-12 text-[#D4AF37] mx-auto opacity-40" />
-          <h3 className="text-lg font-bold text-white">Influencer Not Found</h3>
-          <p className="text-xs text-gray-400 max-w-md mx-auto">{error}</p>
+        <div className="bg-white p-12 rounded-2xl border border-slate-200 shadow-sm text-center space-y-4">
+          <Video className="w-12 h-12 text-[#B8860B] mx-auto opacity-40" />
+          <h3 className="text-lg font-bold text-slate-900">Influencer Not Found</h3>
+          <p className="text-xs text-slate-500 max-w-md mx-auto">{error}</p>
           <Link
             href="/admin/influencers"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#D4AF37] text-black font-bold text-xs"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#D4AF37] text-white font-bold text-xs"
           >
             <ArrowLeft className="w-4 h-4" /> Return to Directory
           </Link>
@@ -124,7 +124,7 @@ export default function InfluencerDetailPage() {
       <div className="flex items-center justify-between">
         <button
           onClick={() => router.back()}
-          className="px-4 py-2 rounded-xl bg-[#131622] border border-[#D4AF37]/30 text-xs font-bold text-[#D4AF37] flex items-center gap-2 hover:border-[#D4AF37] transition-all"
+          className="px-4 py-2 rounded-xl bg-white border border-slate-300 text-xs font-bold text-slate-700 flex items-center gap-2 hover:border-[#D4AF37] hover:text-[#B8860B] transition-all shadow-sm"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Influencer Directory
         </button>
@@ -133,64 +133,62 @@ export default function InfluencerDetailPage() {
           href={influencer.instaProfileUrl}
           target="_blank"
           rel="noreferrer"
-          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black font-black text-xs shadow-gold-md hover:shadow-gold-lg hover:brightness-110 transition-all flex items-center gap-2"
+          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#997A15] text-white font-black text-xs shadow-gold-md hover:brightness-105 transition-all flex items-center gap-2"
         >
           <Instagram className="w-4 h-4" /> Open Instagram Profile <ExternalLink className="w-3.5 h-3.5" />
         </a>
       </div>
 
       {/* Main Profile Header Banner */}
-      <div className="glass-panel rounded-3xl p-8 border border-[#D4AF37]/30 relative overflow-hidden space-y-6">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-gold-radial pointer-events-none opacity-30" />
-
+      <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm relative overflow-hidden space-y-6">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
           <div className="flex items-center gap-5">
             <img
               src={influencer.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300"}
               alt={influencer.name}
-              className="w-20 h-20 rounded-2xl object-cover border-2 border-[#D4AF37] shadow-gold-md"
+              className="w-20 h-20 rounded-2xl object-cover border-2 border-[#D4AF37] shadow-sm"
             />
             <div className="space-y-1.5">
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-black text-white">{influencer.name}</h1>
-                <span className="px-3 py-1 rounded-full bg-[#1E2230] border border-[#D4AF37]/40 text-xs font-bold text-[#D4AF37]">
+                <h1 className="text-2xl font-black text-slate-900">{influencer.name}</h1>
+                <span className="px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-[#B8860B]">
                   {influencer.category}
                 </span>
               </div>
-              <div className="text-sm font-mono text-[#D4AF37] flex items-center gap-1.5 font-bold">
+              <div className="text-sm font-mono text-[#B8860B] flex items-center gap-1.5 font-bold">
                 <Instagram className="w-4 h-4" /> {influencer.instaHandle}
               </div>
-              <p className="text-xs text-gray-400 max-w-xl">{influencer.bio || "Content Creator & Instagram Reel Specialist."}</p>
+              <p className="text-xs text-slate-600 font-medium max-w-xl">{influencer.bio || "Content Creator & Instagram Reel Specialist."}</p>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#0E1017] border border-[#D4AF37]/20 text-right space-y-1 min-w-[200px]">
-            <span className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">Rate Per Reel</span>
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-right space-y-1 min-w-[200px]">
+            <span className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Rate Per Reel</span>
             <div className="text-2xl font-black text-gold-gradient">{formatCurrency(influencer.ratePerReel)}</div>
-            <div className="text-[10px] text-emerald-400 font-semibold flex items-center justify-end gap-1">
-              <CheckCircle2 className="w-3 h-3" /> Verified Creator Rate
+            <div className="text-[10px] text-emerald-700 font-bold flex items-center justify-end gap-1">
+              <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Verified Creator Rate
             </div>
           </div>
         </div>
 
         {/* Metrics Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-[#D4AF37]/15">
-          <div className="p-4 rounded-2xl bg-[#131622] border border-[#D4AF37]/20">
-            <span className="text-[11px] text-gray-400 font-bold uppercase">Followers</span>
-            <div className="text-xl font-black text-white mt-1">{formatNumber(influencer.followersCount)}</div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-slate-100">
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+            <span className="text-[11px] text-slate-500 font-bold uppercase">Followers</span>
+            <div className="text-xl font-black text-slate-900 mt-1">{formatNumber(influencer.followersCount)}</div>
           </div>
-          <div className="p-4 rounded-2xl bg-[#131622] border border-[#D4AF37]/20">
-            <span className="text-[11px] text-gray-400 font-bold uppercase">Engagement Rate</span>
-            <div className="text-xl font-black text-[#D4AF37] mt-1">{influencer.engagementRate || 4.8}%</div>
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+            <span className="text-[11px] text-slate-500 font-bold uppercase">Engagement Rate</span>
+            <div className="text-xl font-black text-[#B8860B] mt-1">{influencer.engagementRate || 4.8}%</div>
           </div>
-          <div className="p-4 rounded-2xl bg-[#131622] border border-[#D4AF37]/20">
-            <span className="text-[11px] text-gray-400 font-bold uppercase">Completed Reels</span>
-            <div className="text-xl font-black text-white mt-1">{influencer.totalReelsCompleted || 12} Reels</div>
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+            <span className="text-[11px] text-slate-500 font-bold uppercase">Completed Reels</span>
+            <div className="text-xl font-black text-slate-900 mt-1">{influencer.totalReelsCompleted || 12} Reels</div>
           </div>
-          <div className="p-4 rounded-2xl bg-[#131622] border border-[#D4AF37]/20">
-            <span className="text-[11px] text-gray-400 font-bold uppercase">Average Rating</span>
-            <div className="text-xl font-black text-amber-400 mt-1 flex items-center gap-1">
-              <Star className="w-4 h-4 fill-amber-400" /> {influencer.averageRating || 4.9} / 5.0
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+            <span className="text-[11px] text-slate-500 font-bold uppercase">Average Rating</span>
+            <div className="text-xl font-black text-amber-500 mt-1 flex items-center gap-1">
+              <Star className="w-4 h-4 fill-amber-400 text-amber-500" /> {influencer.averageRating || 4.9} / 5.0
             </div>
           </div>
         </div>
@@ -200,38 +198,38 @@ export default function InfluencerDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Contact & Bio Information */}
         <div className="space-y-6">
-          <div className="glass-panel rounded-2xl p-6 space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2 pb-3 border-b border-[#D4AF37]/15">
-              <Users className="w-4 h-4 text-[#D4AF37]" /> Contact Information
+          <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 pb-3 border-b border-slate-100">
+              <Users className="w-4 h-4 text-[#B8860B]" /> Contact Information
             </h3>
 
-            <div className="space-y-3 text-xs text-gray-300">
-              <div className="flex items-center justify-between p-3 rounded-xl bg-[#131622] border border-[#D4AF37]/10">
-                <span className="text-gray-400 flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-[#D4AF37]" /> Email
+            <div className="space-y-3 text-xs text-slate-700">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="text-slate-500 flex items-center gap-2 font-medium">
+                  <Mail className="w-4 h-4 text-[#B8860B]" /> Email
                 </span>
-                <span className="font-mono text-white">{influencer.email || "Not specified"}</span>
+                <span className="font-mono text-slate-900 font-bold">{influencer.email || "Not specified"}</span>
               </div>
 
-              <div className="flex items-center justify-between p-3 rounded-xl bg-[#131622] border border-[#D4AF37]/10">
-                <span className="text-gray-400 flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-[#D4AF37]" /> Phone
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="text-slate-500 flex items-center gap-2 font-medium">
+                  <Phone className="w-4 h-4 text-[#B8860B]" /> Phone
                 </span>
-                <span className="font-mono text-white">{influencer.phone || "+91 98765 00000"}</span>
+                <span className="font-mono text-slate-900 font-bold">{influencer.phone || "+91 98765 00000"}</span>
               </div>
 
-              <div className="flex items-center justify-between p-3 rounded-xl bg-[#131622] border border-[#D4AF37]/10">
-                <span className="text-gray-400 flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-[#D4AF37]" /> Location
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="text-slate-500 flex items-center gap-2 font-medium">
+                  <MapPin className="w-4 h-4 text-[#B8860B]" /> Location
                 </span>
-                <span className="text-white">{influencer.location || "Mumbai, India"}</span>
+                <span className="text-slate-900 font-bold">{influencer.location || "Mumbai, India"}</span>
               </div>
 
-              <div className="flex items-center justify-between p-3 rounded-xl bg-[#131622] border border-[#D4AF37]/10">
-                <span className="text-gray-400 flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-[#D4AF37]" /> Status
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="text-slate-500 flex items-center gap-2 font-medium">
+                  <Calendar className="w-4 h-4 text-[#B8860B]" /> Status
                 </span>
-                <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold border border-emerald-500/30">
+                <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-300">
                   {(influencer.status || "active").toUpperCase()}
                 </span>
               </div>
@@ -241,13 +239,13 @@ export default function InfluencerDetailPage() {
 
         {/* Right Column: Assigned Marketing Campaigns */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="glass-panel rounded-2xl p-6 space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2 pb-3 border-b border-[#D4AF37]/15">
-              <Sparkles className="w-4 h-4 text-[#D4AF37]" /> Brand Campaigns & Placements ({campaigns.length})
+          <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 pb-3 border-b border-slate-100">
+              <Sparkles className="w-4 h-4 text-[#B8860B]" /> Brand Campaigns & Placements ({campaigns.length})
             </h3>
 
             {campaigns.length === 0 ? (
-              <div className="p-8 text-center text-xs text-gray-400 rounded-xl bg-[#131622] border border-[#D4AF37]/10">
+              <div className="p-8 text-center text-xs text-slate-500 font-medium rounded-xl bg-slate-50 border border-slate-200">
                 No active campaigns assigned to this creator currently.
               </div>
             ) : (
@@ -255,18 +253,18 @@ export default function InfluencerDetailPage() {
                 {campaigns.map((c) => (
                   <div
                     key={c.id}
-                    className="p-4 rounded-xl bg-[#131622] border border-[#D4AF37]/20 flex items-center justify-between hover:border-[#D4AF37]/50 transition-all"
+                    className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between hover:border-[#D4AF37] transition-all"
                   >
                     <div className="space-y-1">
-                      <div className="text-xs font-bold text-white">{c.title}</div>
-                      <div className="text-[11px] text-gray-400">Client: {c.clientName}</div>
+                      <div className="text-xs font-bold text-slate-900">{c.title}</div>
+                      <div className="text-[11px] text-slate-500">Client: {c.clientName}</div>
                     </div>
 
                     <div className="text-right space-y-1">
-                      <div className="text-xs font-bold text-[#D4AF37]">{formatCurrency(c.budget)}</div>
+                      <div className="text-xs font-bold text-[#B8860B]">{formatCurrency(c.budget)}</div>
                       <Link
                         href={`/admin/campaigns/${c.id}`}
-                        className="text-[11px] text-gray-300 hover:text-[#D4AF37] underline"
+                        className="text-[11px] text-slate-600 hover:text-[#B8860B] underline font-medium"
                       >
                         View Campaign →
                       </Link>

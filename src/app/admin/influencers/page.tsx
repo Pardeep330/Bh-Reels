@@ -193,7 +193,7 @@ export default function InfluencersPage() {
           setInfluencers((prev) => [d.influencer, ...prev]);
         }
         setShowAddModal(false);
-        setToastMsg("Influencer created dynamically in MongoDB!");
+        setToastMsg("Influencer created successfully!");
         setTimeout(() => setToastMsg(""), 4000);
         fetchInfluencers();
       }
@@ -238,7 +238,7 @@ export default function InfluencersPage() {
           );
         }
         setShowEditModal(false);
-        setToastMsg("Influencer updated dynamically across all fields!");
+        setToastMsg("Influencer updated successfully!");
         setTimeout(() => setToastMsg(""), 4000);
         fetchInfluencers();
       }
@@ -259,7 +259,7 @@ export default function InfluencersPage() {
       if (res.ok) {
         setInfluencers((prev) => prev.filter((i) => (i.id || i._id) !== infId));
         setShowDeleteModal(false);
-        setToastMsg("Influencer deleted dynamically!");
+        setToastMsg("Influencer deleted successfully!");
         setTimeout(() => setToastMsg(""), 4000);
         fetchInfluencers();
       }
@@ -291,45 +291,45 @@ export default function InfluencersPage() {
       />
 
       {toastMsg && (
-        <div className="p-4 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-2 animate-in fade-in">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+        <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2 animate-in fade-in">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
           <span>{toastMsg}</span>
         </div>
       )}
 
-      {/* Control Bar: Search, Category Filters, Max Rate Filter & Add Button */}
-      <div className="glass-panel p-6 rounded-2xl space-y-4">
+      {/* Control Bar */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
           {/* Search Box */}
           <div className="relative w-full lg:w-96">
-            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search by name, handle, category..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] transition-all"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#D4AF37] transition-all"
             />
           </div>
 
           {/* Filters & Add Button */}
           <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
             {/* Max Rate Input */}
-            <div className="flex items-center gap-2 bg-[#131622] border border-[#D4AF37]/20 rounded-xl px-3 py-2 text-xs">
-              <span className="text-gray-400">Max Reel Rate (₹):</span>
+            <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+              <span className="text-slate-600 font-medium">Max Reel Rate (₹):</span>
               <input
                 type="number"
                 placeholder="Any"
                 value={maxRate}
                 onChange={(e) => setMaxRate(e.target.value ? Number(e.target.value) : "")}
-                className="w-24 bg-transparent text-white focus:outline-none font-bold text-xs"
+                className="w-24 bg-transparent text-slate-900 focus:outline-none font-bold text-xs"
               />
             </div>
 
             {/* Add Influencer Button */}
             <button
               onClick={handleOpenAdd}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black font-extrabold text-xs shadow-gold-md hover:shadow-gold-lg hover:brightness-110 transition-all flex items-center gap-2"
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#997A15] text-white font-extrabold text-xs shadow-gold-md hover:brightness-105 transition-all flex items-center gap-2"
             >
               <Plus className="w-4 h-4" /> Add New Influencer
             </button>
@@ -338,17 +338,17 @@ export default function InfluencersPage() {
 
         {/* Category Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pt-2 pb-1 scrollbar-none">
-          <span className="text-xs text-gray-400 flex items-center gap-1 font-semibold pr-2">
-            <Filter className="w-3.5 h-3.5 text-[#D4AF37]" /> Categories:
+          <span className="text-xs text-slate-600 flex items-center gap-1 font-bold pr-2">
+            <Filter className="w-3.5 h-3.5 text-[#B8860B]" /> Categories:
           </span>
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                 selectedCategory === cat
-                  ? "bg-[#D4AF37] text-black shadow-gold-sm"
-                  : "bg-[#131622] border border-[#D4AF37]/20 text-gray-300 hover:border-[#D4AF37]"
+                  ? "bg-[#D4AF37] text-white shadow-sm"
+                  : "bg-slate-100 border border-slate-200 text-slate-700 hover:bg-slate-200"
               }`}
             >
               {cat}
@@ -359,12 +359,12 @@ export default function InfluencersPage() {
 
       {/* Influencers Cards Grid */}
       {loading ? (
-        <div className="text-center py-12 text-gray-400 text-xs">Loading creator directory from MongoDB...</div>
+        <div className="text-center py-12 text-slate-500 font-semibold text-xs">Loading creator directory from MongoDB...</div>
       ) : influencers.length === 0 ? (
-        <div className="glass-panel p-12 rounded-2xl text-center space-y-3">
-          <Video className="w-12 h-12 text-[#D4AF37] mx-auto opacity-50" />
-          <h3 className="text-base font-bold text-white">No Influencers Found</h3>
-          <p className="text-xs text-gray-400">Try adjusting your search criteria or add a new creator.</p>
+        <div className="bg-white p-12 rounded-2xl border border-slate-200 shadow-sm text-center space-y-3">
+          <Video className="w-12 h-12 text-[#B8860B] mx-auto opacity-50" />
+          <h3 className="text-base font-bold text-slate-900">No Influencers Found</h3>
+          <p className="text-xs text-slate-500">Try adjusting your search criteria or add a new creator.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -374,7 +374,7 @@ export default function InfluencersPage() {
             return (
               <div
                 key={infId}
-                className="glass-panel glass-panel-hover rounded-2xl p-6 relative flex flex-col justify-between space-y-5"
+                className="bg-white rounded-3xl p-6 relative flex flex-col justify-between space-y-5 border border-slate-200 shadow-sm hover:shadow-md transition-all"
               >
                 {/* Card Header: Avatar, Name & Handle */}
                 <div className="flex items-start justify-between">
@@ -382,61 +382,61 @@ export default function InfluencersPage() {
                     <img
                       src={inf.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300"}
                       alt={inf.name}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-[#D4AF37] shadow-gold-sm"
+                      className="w-12 h-12 rounded-full object-cover border-2 border-[#D4AF37] shadow-sm"
                     />
                     <div>
                       <Link href={`/admin/influencers/${infId}`}>
-                        <h3 className="font-extrabold text-white text-base tracking-tight hover:text-[#D4AF37] transition-colors flex items-center gap-1">
-                          {inf.name} <ArrowRight className="w-3.5 h-3.5 text-[#D4AF37] opacity-60" />
+                        <h3 className="font-extrabold text-slate-900 text-base tracking-tight hover:text-[#B8860B] transition-colors flex items-center gap-1">
+                          {inf.name} <ArrowRight className="w-3.5 h-3.5 text-[#B8860B] opacity-60" />
                         </h3>
                       </Link>
-                      <div className="text-xs font-mono text-[#D4AF37] flex items-center gap-1">
+                      <div className="text-xs font-mono text-[#B8860B] font-bold flex items-center gap-1">
                         <Instagram className="w-3.5 h-3.5" /> {inf.instaHandle}
                       </div>
                     </div>
                   </div>
 
-                  <span className="px-2.5 py-1 rounded-full bg-[#1E2230] border border-[#D4AF37]/30 text-[10px] font-bold text-[#D4AF37]">
+                  <span className="px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-[10px] font-bold text-[#B8860B]">
                     {inf.category}
                   </span>
                 </div>
 
-                {/* Bio / Description */}
-                {inf.bio && <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">{inf.bio}</p>}
+                {/* Bio */}
+                {inf.bio && <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed font-medium">{inf.bio}</p>}
 
                 {/* Stats Highlight Bar */}
-                <div className="grid grid-cols-2 gap-3 p-3 rounded-xl bg-[#0E1017]/80 border border-[#D4AF37]/15">
+                <div className="grid grid-cols-2 gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
                   <div>
-                    <div className="text-[10px] text-gray-400 uppercase font-semibold">Rate Per Reel</div>
+                    <div className="text-[10px] text-slate-500 uppercase font-bold">Rate Per Reel</div>
                     <div className="text-sm font-extrabold text-gold-gradient">
                       {formatCurrency(inf.ratePerReel)}
                     </div>
                   </div>
                   <div>
-                    <div className="text-[10px] text-gray-400 uppercase font-semibold">Followers</div>
-                    <div className="text-sm font-extrabold text-white">
+                    <div className="text-[10px] text-slate-500 uppercase font-bold">Followers</div>
+                    <div className="text-sm font-extrabold text-slate-900">
                       {formatNumber(inf.followersCount)}
                     </div>
                   </div>
                 </div>
 
                 {/* Contact & Location Info */}
-                <div className="text-[11px] text-gray-400 space-y-1">
+                <div className="text-[11px] text-slate-600 font-medium space-y-1">
                   <div className="flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" /> {inf.location || "Mumbai, India"}
+                    <MapPin className="w-3.5 h-3.5 text-[#B8860B]" /> {inf.location || "Mumbai, India"}
                   </div>
                   {inf.email && (
                     <div className="flex items-center gap-1.5">
-                      <Mail className="w-3.5 h-3.5 text-gray-500" /> {inf.email}
+                      <Mail className="w-3.5 h-3.5 text-slate-400" /> {inf.email}
                     </div>
                   )}
                 </div>
 
                 {/* Card Footer Actions */}
-                <div className="pt-3 border-t border-[#D4AF37]/15 flex items-center justify-between">
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
                   <Link
                     href={`/admin/influencers/${infId}`}
-                    className="px-3 py-1.5 rounded-lg bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-xs font-bold text-[#D4AF37] flex items-center gap-1.5 transition-all"
+                    className="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-200 text-xs font-bold text-[#B8860B] flex items-center gap-1.5 transition-all"
                   >
                     View Analytics <ArrowRight className="w-3 h-3" />
                   </Link>
@@ -444,17 +444,17 @@ export default function InfluencersPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleOpenEdit(inf)}
-                      className="p-1.5 rounded-lg bg-[#181B2B] hover:bg-[#1E2230] text-gray-300 hover:text-white border border-gray-700 transition-colors"
-                      title="Edit All Influencer Fields"
+                      className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-300 transition-colors"
+                      title="Edit Influencer"
                     >
-                      <Edit2 className="w-4 h-4" />
+                      <Edit2 className="w-3.5 h-3.5 text-[#B8860B]" />
                     </button>
                     <button
                       onClick={() => handleOpenDelete(inf)}
-                      className="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 transition-colors"
+                      className="p-2 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 transition-colors"
                       title="Delete Influencer"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
@@ -466,13 +466,13 @@ export default function InfluencersPage() {
 
       {/* Add Influencer Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="glass-panel w-full max-w-2xl rounded-2xl p-6 border border-[#D4AF37]/40 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-4 border-b border-[#D4AF37]/20">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <Plus className="w-5 h-5 text-[#D4AF37]" /> Add New Influencer
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white w-full max-w-2xl rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+              <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <Plus className="w-5 h-5 text-[#B8860B]" /> Add New Influencer
               </h3>
-              <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-white">
+              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-900 font-bold">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -480,71 +480,71 @@ export default function InfluencersPage() {
             <form onSubmit={handleAddSubmit} className="space-y-4 text-xs">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Full Name *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Full Name *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Rohan Sharma"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Instagram Handle *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Instagram Handle *</label>
                   <input
                     type="text"
                     required
                     placeholder="@rohan_vlogs"
                     value={formData.instaHandle}
                     onChange={(e) => setFormData({ ...formData, instaHandle: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Rate Per Reel (₹) *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Rate Per Reel (₹) *</label>
                   <input
                     type="number"
                     required
                     placeholder="25000"
                     value={formData.ratePerReel}
                     onChange={(e) => setFormData({ ...formData, ratePerReel: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Followers Count *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Followers Count *</label>
                   <input
                     type="number"
                     required
                     placeholder="450000"
                     value={formData.followersCount}
                     onChange={(e) => setFormData({ ...formData, followersCount: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Engagement Rate (%)</label>
+                  <label className="block text-slate-700 font-bold mb-1">Engagement Rate (%)</label>
                   <input
                     type="number"
                     step="0.1"
                     placeholder="4.8"
                     value={formData.engagementRate}
                     onChange={(e) => setFormData({ ...formData, engagementRate: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Category</label>
+                  <label className="block text-slate-700 font-bold mb-1">Category</label>
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   >
                     {categories.filter((c) => c !== "All").map((cat) => (
                       <option key={cat} value={cat}>
@@ -555,44 +555,44 @@ export default function InfluencersPage() {
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Email Address</label>
+                  <label className="block text-slate-700 font-bold mb-1">Email Address</label>
                   <input
                     type="email"
                     placeholder="rohan@creator.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Phone Number</label>
+                  <label className="block text-slate-700 font-bold mb-1">Phone Number</label>
                   <input
                     type="text"
                     placeholder="+91 98765 43210"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Location</label>
+                  <label className="block text-slate-700 font-bold mb-1">Location</label>
                   <input
                     type="text"
                     placeholder="Mumbai, India"
                     value={formData.location}
                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Status</label>
+                  <label className="block text-slate-700 font-bold mb-1">Status</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   >
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
@@ -601,30 +601,30 @@ export default function InfluencersPage() {
                 </div>
               </div>
 
-              {/* Server Image Upload for Creator Avatar */}
-              <div className="p-4 rounded-xl bg-[#0E1017] border border-[#D4AF37]/30 space-y-3">
-                <label className="block text-white font-bold text-xs flex items-center gap-1.5">
-                  <Upload className="w-4 h-4 text-[#D4AF37]" /> Upload Avatar Image to Server
+              {/* Server Image Upload */}
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                <label className="block text-slate-900 font-bold text-xs flex items-center gap-1.5">
+                  <Upload className="w-4 h-4 text-[#B8860B]" /> Upload Avatar Image to Server
                 </label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleFileUpload}
-                  className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#D4AF37] file:text-black hover:file:brightness-110 cursor-pointer"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#D4AF37] file:text-white cursor-pointer"
                 />
                 {uploading && (
-                  <div className="flex items-center gap-2 text-xs text-[#D4AF37] font-bold animate-pulse">
+                  <div className="flex items-center gap-2 text-xs text-[#B8860B] font-bold animate-pulse">
                     <Loader2 className="w-4 h-4 animate-spin" /> Uploading image to server...
                   </div>
                 )}
                 <div>
-                  <div className="text-[10px] text-gray-400 mb-1">Or paste image URL:</div>
+                  <div className="text-[10px] text-slate-500 mb-1 font-medium">Or paste image URL:</div>
                   <input
                     type="url"
                     placeholder="https://images.unsplash.com/..."
                     value={formData.avatar}
                     onChange={(e) => setFormData({ ...formData, avatar: e.target.value })}
-                    className="w-full bg-[#131622] border border-gray-800 rounded-lg px-3 py-1.5 text-xs text-white"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900"
                   />
                 </div>
                 {formData.avatar && (
@@ -635,27 +635,27 @@ export default function InfluencersPage() {
               </div>
 
               <div>
-                <label className="block text-gray-300 font-semibold mb-1">Creator Bio</label>
+                <label className="block text-slate-700 font-bold mb-1">Creator Bio</label>
                 <textarea
                   rows={2}
                   placeholder="Tech reviewer, unboxing reels..."
                   value={formData.bio}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                  className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                 />
               </div>
 
-              <div className="pt-4 border-t border-[#D4AF37]/20 flex items-center justify-end gap-3">
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 rounded-xl bg-[#131622] text-gray-300 hover:text-white"
+                  className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 font-bold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black font-extrabold shadow-gold-md hover:brightness-110"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#997A15] text-white font-extrabold shadow-gold-md hover:brightness-105"
                 >
                   Save Influencer
                 </button>
@@ -665,15 +665,15 @@ export default function InfluencersPage() {
         </div>
       )}
 
-      {/* Complete Edit Influencer Modal (Edits All Fields) */}
+      {/* Edit Influencer Modal */}
       {showEditModal && selectedInf && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="glass-panel w-full max-w-2xl rounded-2xl p-6 border border-[#D4AF37]/40 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-4 border-b border-[#D4AF37]/20">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <Edit2 className="w-5 h-5 text-[#D4AF37]" /> Edit Influencer (All Fields)
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white w-full max-w-2xl rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+              <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <Edit2 className="w-5 h-5 text-[#B8860B]" /> Edit Influencer Details
               </h3>
-              <button onClick={() => setShowEditModal(false)} className="text-gray-400 hover:text-white">
+              <button onClick={() => setShowEditModal(false)} className="text-slate-400 hover:text-slate-900 font-bold">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -681,66 +681,66 @@ export default function InfluencersPage() {
             <form onSubmit={handleEditSubmit} className="space-y-4 text-xs">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Full Name *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Full Name *</label>
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Instagram Handle *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Instagram Handle *</label>
                   <input
                     type="text"
                     required
                     value={formData.instaHandle}
                     onChange={(e) => setFormData({ ...formData, instaHandle: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Rate Per Reel (₹) *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Rate Per Reel (₹) *</label>
                   <input
                     type="number"
                     required
                     value={formData.ratePerReel}
                     onChange={(e) => setFormData({ ...formData, ratePerReel: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Followers Count *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Followers Count *</label>
                   <input
                     type="number"
                     required
                     value={formData.followersCount}
                     onChange={(e) => setFormData({ ...formData, followersCount: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Engagement Rate (%)</label>
+                  <label className="block text-slate-700 font-bold mb-1">Engagement Rate (%)</label>
                   <input
                     type="number"
                     step="0.1"
                     value={formData.engagementRate}
                     onChange={(e) => setFormData({ ...formData, engagementRate: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Category</label>
+                  <label className="block text-slate-700 font-bold mb-1">Category</label>
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   >
                     {categories.filter((c) => c !== "All").map((cat) => (
                       <option key={cat} value={cat}>
@@ -751,41 +751,41 @@ export default function InfluencersPage() {
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Email Address</label>
+                  <label className="block text-slate-700 font-bold mb-1">Email Address</label>
                   <input
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Phone Number</label>
+                  <label className="block text-slate-700 font-bold mb-1">Phone Number</label>
                   <input
                     type="text"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Location</label>
+                  <label className="block text-slate-700 font-bold mb-1">Location</label>
                   <input
                     type="text"
                     value={formData.location}
                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Status</label>
+                  <label className="block text-slate-700 font-bold mb-1">Status</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                    className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"
                   >
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
@@ -794,51 +794,19 @@ export default function InfluencersPage() {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-gray-300 font-semibold mb-1">Instagram Profile Link</label>
-                <input
-                  type="url"
-                  placeholder="https://instagram.com/..."
-                  value={formData.instaProfileUrl}
-                  onChange={(e) => setFormData({ ...formData, instaProfileUrl: e.target.value })}
-                  className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-300 font-semibold mb-1">Avatar Image URL</label>
-                <input
-                  type="url"
-                  placeholder="https://images.unsplash.com/..."
-                  value={formData.avatar}
-                  onChange={(e) => setFormData({ ...formData, avatar: e.target.value })}
-                  className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-300 font-semibold mb-1">Creator Bio / Notes</label>
-                <textarea
-                  rows={2}
-                  value={formData.bio}
-                  onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                  className="w-full bg-[#131622] border border-[#D4AF37]/30 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-[#D4AF37]"
-                />
-              </div>
-
-              <div className="pt-4 border-t border-[#D4AF37]/20 flex items-center justify-end gap-3">
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setShowEditModal(false)}
-                  className="px-4 py-2 rounded-xl bg-[#131622] text-gray-300 hover:text-white"
+                  className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 font-bold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#BF953F] via-[#D4AF37] to-[#AA771C] text-black font-extrabold shadow-gold-md hover:brightness-110 flex items-center gap-2"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#997A15] text-white font-extrabold shadow-gold-md hover:brightness-105"
                 >
-                  <CheckCircle2 className="w-4 h-4" /> Save All Changes
+                  Save Changes
                 </button>
               </div>
             </form>
@@ -846,26 +814,26 @@ export default function InfluencersPage() {
         </div>
       )}
 
-      {/* Delete Modal */}
+      {/* Delete Confirmation Modal */}
       {showDeleteModal && selectedInf && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="glass-panel w-full max-w-md rounded-2xl p-6 border border-red-500/40 space-y-4">
-            <h3 className="text-base font-bold text-red-400 flex items-center gap-2">
-              <Trash2 className="w-5 h-5" /> Confirm Deletion
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white w-full max-w-md rounded-3xl p-6 sm:p-8 border border-red-200 shadow-2xl space-y-4">
+            <h3 className="text-base font-bold text-red-600 flex items-center gap-2">
+              <Trash2 className="w-5 h-5" /> Confirm Influencer Deletion
             </h3>
-            <p className="text-xs text-gray-300">
-              Are you sure you want to delete <span className="font-bold text-white">{selectedInf.name}</span> from MongoDB? This action cannot be undone.
+            <p className="text-xs text-slate-600 font-medium">
+              Are you sure you want to remove <span className="font-bold text-slate-900">{selectedInf.name}</span> ({selectedInf.instaHandle})?
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 rounded-xl bg-[#131622] text-gray-300 text-xs"
+                className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteConfirm}
-                className="px-5 py-2 rounded-xl bg-red-600 text-white font-extrabold text-xs hover:bg-red-500"
+                className="px-5 py-2 rounded-xl bg-red-600 text-white font-extrabold text-xs hover:bg-red-700 shadow-sm"
               >
                 Confirm Delete
               </button>
