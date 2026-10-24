@@ -18,7 +18,7 @@ interface AuthContextType {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  loginStep1: (email: string, pass: string) => Promise<{ requiresOtp: boolean; demoOtp?: string }>;
+  loginStep1: (email: string, pass: string) => Promise<{ requiresOtp: boolean; message?: string }>;
   verifyOtpStep2: (email: string, otp: string) => Promise<boolean>;
   logout: () => void;
   updateProfile: (data: Partial<AdminUser> & { currentPassword?: string; newPassword?: string }) => Promise<void>;
@@ -51,15 +51,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Default initial session fallback for seamless experience
       const defaultAdmin: AdminUser = {
         id: "admin-1",
-        name: "BH Admin",
-        email: "admin@bhreels.com",
+        name: "Chetan Dada",
+        email: "no.reply.bhreels@gmail.com",
         role: "admin",
         avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300",
         is2FAEnabled: true,
       };
-      setToken("demo-admin-session-token");
+      setToken("admin-session-token");
       setUser(defaultAdmin);
-      localStorage.setItem("bh_auth_token", "demo-admin-session-token");
+      localStorage.setItem("bh_auth_token", "admin-session-token");
       localStorage.setItem("bh_auth_user", JSON.stringify(defaultAdmin));
     }
     setIsLoading(false);
@@ -90,7 +90,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     return {
       requiresOtp: data.requiresOtp,
-      demoOtp: data.demoOtp,
+      message: data.message,
     };
   };
 

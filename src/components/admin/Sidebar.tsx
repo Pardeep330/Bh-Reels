@@ -132,10 +132,10 @@ export const Sidebar: React.FC = () => {
           />
           <div className="flex-1 min-w-0">
             <div className="text-sm font-bold text-slate-900 truncate flex items-center gap-1">
-              {user?.name || "BH Admin"}
+              {user?.name || "Chetan Dada"}
               <Sparkles className="w-3 h-3 text-[#B8860B] inline" />
             </div>
-            <div className="text-xs text-slate-500 truncate">{user?.email || "admin@bhreels.com"}</div>
+            <div className="text-xs text-slate-500 truncate">{user?.email || "no.reply.bhreels@gmail.com"}</div>
           </div>
         </div>
 

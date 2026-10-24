@@ -66,7 +66,7 @@ export default function ContactPage() {
                 <label className="block text-slate-700 font-bold mb-1">Phone / WhatsApp Number</label>
                 <input
                   type="text"
-                  placeholder="+91 98765 43210"
+                  placeholder="+91 9779886200"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all"
@@ -103,7 +103,7 @@ export default function ContactPage() {
                 <MapPin className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                 <div>
                   <div className="font-bold text-slate-900 text-sm">Headquarters</div>
-                  <p className="text-slate-600 font-medium mt-0.5">BH Team Studios, BKC, Mumbai, Maharashtra 400051</p>
+                  <p className="text-slate-600 font-medium mt-0.5">BH Team Studios, Sec 08, Chandigarh , 160009</p>
                 </div>
               </div>
 
@@ -111,7 +111,11 @@ export default function ContactPage() {
                 <Mail className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                 <div>
                   <div className="font-bold text-slate-900 text-sm">Email Us</div>
-                  <p className="text-slate-600 font-medium mt-0.5">contact@bhreels.com</p>
+                  <p className="text-slate-600 font-medium mt-0.5">
+                    <a href="mailto:bhreels.offical@gmail.com" className="hover:text-amber-700 transition-colors">
+                      bhreels.offical@gmail.com
+                    </a>
+                  </p>
                 </div>
               </div>
 
@@ -119,7 +123,10 @@ export default function ContactPage() {
                 <Phone className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                 <div>
                   <div className="font-bold text-slate-900 text-sm">Call / WhatsApp</div>
-                  <p className="text-slate-600 font-medium mt-0.5">+91 98765 43210</p>
+                  <div className="text-slate-600 font-medium mt-0.5 flex flex-col gap-0.5">
+                    <a href="tel:+919779886200" className="hover:text-amber-700 transition-colors">+91 9779886200</a>
+                    <a href="tel:+918284814341" className="hover:text-amber-700 transition-colors">+91 8284814341</a>
+                  </div>
                 </div>
               </div>
             </div>

@@ -20,6 +20,9 @@ import {
   ChevronUp,
   ChevronDown,
   X,
+  Lock,
+  Unlock,
+  AlertCircle,
 } from "lucide-react";
 
 export default function SelectInfluencersPage() {
@@ -97,6 +100,9 @@ export default function SelectInfluencersPage() {
     return matchesSearch && matchesCat;
   });
 
+  const [budgetUnlocked, setBudgetUnlocked] = useState(false);
+  const [budgetError, setBudgetError] = useState("");
+
   const toggleSelect = (id: string) => {
     const newMap = { ...selectedMap };
     if (newMap[id]) {
@@ -104,6 +110,11 @@ export default function SelectInfluencersPage() {
     } else {
       newMap[id] = 1;
     }
+    const newCount = Object.keys(newMap).length;
+    if (newCount < 10) {
+      setBudgetUnlocked(false);
+    }
+    setBudgetError("");
     setSelectedMap(newMap);
   };
 
@@ -125,10 +136,23 @@ export default function SelectInfluencersPage() {
 
   const totalReelsCount = selectedIds.reduce((sum, id) => sum + (selectedMap[id] || 1), 0);
 
+  const handleCheckBudget = () => {
+    if (selectedIds.length < 10) {
+      setBudgetError(
+        `Minimum requirement is 10 influencers. You have currently selected ${selectedIds.length} of 10 creators. Please select at least 10 influencers before you can check the total budget.`
+      );
+      setBudgetUnlocked(false);
+      return false;
+    }
+    setBudgetError("");
+    setBudgetUnlocked(true);
+    return true;
+  };
+
   const handleProceedToPayment = (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedIds.length === 0) {
-      alert("Please select at least one influencer for package total calculation!");
+    if (selectedIds.length < 10 || !budgetUnlocked) {
+      handleCheckBudget();
       return;
     }
 
@@ -481,17 +505,78 @@ export default function SelectInfluencersPage() {
                   )}
                 </div>
 
-                {/* Grand Total */}
-                <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 text-white shadow-md">
-                  <div className="flex items-center justify-between text-xs text-amber-100 font-semibold mb-1">
-                    <span>Package Estimate</span>
-                    <span className="text-white font-bold">{totalReelsCount} Reel{totalReelsCount !== 1 ? "s" : ""}</span>
+                {/* 10 Influencers Requirement & Budget Estimate Card */}
+                {budgetUnlocked && selectedIds.length >= 10 ? (
+                  <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 text-white shadow-md space-y-2">
+                    <div className="flex items-center justify-between text-xs text-amber-100 font-semibold">
+                      <span className="flex items-center gap-1.5 font-bold">
+                        <Unlock className="w-4 h-4 text-white" /> Package Estimate Unlocked
+                      </span>
+                      <span className="text-white font-bold">{totalReelsCount} Reel{totalReelsCount !== 1 ? "s" : ""}</span>
+                    </div>
+                    <div className="text-2xl sm:text-3xl font-black text-white">
+                      {formatCurrency(totalEstimatedPrice)}
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] text-amber-100 pt-1">
+                      <span>✓ 10+ Creators Selected ({selectedIds.length} creators)</span>
+                      <button
+                        type="button"
+                        onClick={handleCheckBudget}
+                        className="underline hover:text-white font-bold text-[10px]"
+                      >
+                        Recalculate
+                      </button>
+                    </div>
                   </div>
-                  <div className="text-2xl sm:text-3xl font-black text-white">
-                    {formatCurrency(totalEstimatedPrice)}
+                ) : (
+                  <div className="p-4 rounded-2xl bg-slate-900 border-2 border-[#D4AF37] text-white shadow-lg space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-[#D4AF37]/50 flex items-center justify-center">
+                          <Lock className="w-4 h-4 text-[#D4AF37]" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-slate-100">Package Budget Locked</div>
+                          <div className="text-[10px] text-amber-400 font-semibold">Requires min. 10 influencers</div>
+                        </div>
+                      </div>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-[#D4AF37] border border-[#D4AF37]/40 font-mono font-bold">
+                        {selectedIds.length}/10 Selected
+                      </span>
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="space-y-1">
+                      <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700">
+                        <div
+                          className="bg-gradient-to-r from-[#B8860B] to-[#D4AF37] h-full transition-all duration-300"
+                          style={{ width: `${Math.min(100, (selectedIds.length / 10) * 100)}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-[10px] text-slate-400 font-medium">
+                        <span>{selectedIds.length >= 10 ? "Requirement met! Ready to check" : `${10 - selectedIds.length} more creators needed`}</span>
+                        <span>Goal: 10 Creators</span>
+                      </div>
+                    </div>
+
+                    {budgetError && (
+                      <div className="p-2.5 rounded-xl bg-red-950/80 border border-red-500/60 text-red-200 text-xs font-semibold flex items-start gap-2">
+                        <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                        <span className="text-[11px] leading-tight">{budgetError}</span>
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      id="check-budget-btn"
+                      onClick={handleCheckBudget}
+                      className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#997A15] text-slate-950 font-black text-xs shadow-gold-sm hover:brightness-110 transition-all flex items-center justify-center gap-2"
+                    >
+                      <Calculator className="w-4 h-4" />
+                      <span>Check Budget ({selectedIds.length}/10 Selected)</span>
+                    </button>
                   </div>
-                  <div className="text-[10px] text-amber-100 mt-1 font-medium">Individual rates are confidential</div>
-                </div>
+                )}
 
                 {/* Form */}
                 <form onSubmit={handleProceedToPayment} className="space-y-3">
@@ -522,15 +607,23 @@ export default function SelectInfluencersPage() {
 
                   <button
                     type="submit"
-                    disabled={selectedIds.length === 0}
+                    disabled={!budgetUnlocked || selectedIds.length < 10}
                     className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#997A15] text-white font-black text-sm shadow-gold-md hover:brightness-105 transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed mt-1"
                   >
-                    <span>Proceed to UPI Payment</span>
+                    <span>
+                      {selectedIds.length < 10
+                        ? `Select 10 Creators First (${selectedIds.length}/10)`
+                        : !budgetUnlocked
+                        ? "Click Check Budget First"
+                        : "Proceed to UPI Payment"}
+                    </span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
 
-                  {selectedIds.length === 0 && (
-                    <p className="text-center text-[10px] text-slate-500 font-medium">Select at least one creator to continue</p>
+                  {selectedIds.length < 10 && (
+                    <p className="text-center text-[10px] text-amber-800 font-bold">
+                      ⚠️ Select {10 - selectedIds.length} more creator{10 - selectedIds.length > 1 ? "s" : ""} to unlock budget &amp; checkout
+                    </p>
                   )}
                 </form>
               </div>
@@ -549,16 +642,26 @@ export default function SelectInfluencersPage() {
           >
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center shrink-0">
-                <Sparkles className="w-4 h-4 text-amber-600" />
+                {budgetUnlocked && selectedIds.length >= 10 ? (
+                  <Sparkles className="w-4 h-4 text-amber-600" />
+                ) : (
+                  <Lock className="w-4 h-4 text-amber-700" />
+                )}
               </div>
               <div>
                 <div className="text-[10px] text-slate-500 font-bold leading-none">
                   {selectedIds.length === 0
-                    ? "No creators selected"
-                    : `${selectedIds.length} creator${selectedIds.length > 1 ? "s" : ""} • ${totalReelsCount} reel${totalReelsCount !== 1 ? "s" : ""}`}
+                    ? "0 of 10 creators selected"
+                    : `${selectedIds.length}/10 selected • ${totalReelsCount} reel${totalReelsCount !== 1 ? "s" : ""}`}
                 </div>
                 <div className="text-base font-black text-slate-900 leading-tight">
-                  {formatCurrency(totalEstimatedPrice)}
+                  {budgetUnlocked && selectedIds.length >= 10 ? (
+                    formatCurrency(totalEstimatedPrice)
+                  ) : (
+                    <span className="text-xs text-amber-800 font-extrabold flex items-center gap-1">
+                      🔒 Budget Locked ({selectedIds.length}/10)
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -632,14 +735,52 @@ export default function SelectInfluencersPage() {
                 )}
               </div>
 
-              {/* Total */}
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 text-white shadow-md">
-                <div className="flex items-center justify-between text-xs text-amber-100 font-semibold mb-1">
-                  <span>Package Estimate</span>
-                  <span className="text-white font-bold">{totalReelsCount} Reel{totalReelsCount !== 1 ? "s" : ""}</span>
+              {/* Total & Check Budget */}
+              {budgetUnlocked && selectedIds.length >= 10 ? (
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 text-white shadow-md">
+                  <div className="flex items-center justify-between text-xs text-amber-100 font-semibold mb-1">
+                    <span>Package Estimate Unlocked</span>
+                    <span className="text-white font-bold">{totalReelsCount} Reel{totalReelsCount !== 1 ? "s" : ""}</span>
+                  </div>
+                  <div className="text-2xl font-black text-white">{formatCurrency(totalEstimatedPrice)}</div>
                 </div>
-                <div className="text-2xl font-black text-white">{formatCurrency(totalEstimatedPrice)}</div>
-              </div>
+              ) : (
+                <div className="p-4 rounded-2xl bg-slate-900 border-2 border-[#D4AF37] text-white shadow-lg space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Lock className="w-4 h-4 text-[#D4AF37]" />
+                      <span className="text-xs font-bold">Requires Min. 10 Influencers</span>
+                    </div>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-[#D4AF37] font-bold">
+                      {selectedIds.length}/10 Selected
+                    </span>
+                  </div>
+
+                  {/* Progress */}
+                  <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700">
+                    <div
+                      className="bg-gradient-to-r from-[#B8860B] to-[#D4AF37] h-full transition-all duration-300"
+                      style={{ width: `${Math.min(100, (selectedIds.length / 10) * 100)}%` }}
+                    />
+                  </div>
+
+                  {budgetError && (
+                    <div className="p-2.5 rounded-xl bg-red-950/80 border border-red-500/60 text-red-200 text-xs font-semibold flex items-start gap-2">
+                      <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                      <span className="text-[11px] leading-tight">{budgetError}</span>
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={handleCheckBudget}
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#997A15] text-slate-950 font-black text-xs shadow-gold-sm hover:brightness-110 flex items-center justify-center gap-2"
+                  >
+                    <Calculator className="w-4 h-4" />
+                    <span>Check Budget ({selectedIds.length}/10 Selected)</span>
+                  </button>
+                </div>
+              )}
 
               {/* Form */}
               <form onSubmit={handleProceedToPayment} className="space-y-3">
@@ -670,10 +811,16 @@ export default function SelectInfluencersPage() {
 
                 <button
                   type="submit"
-                  disabled={selectedIds.length === 0}
+                  disabled={!budgetUnlocked || selectedIds.length < 10}
                   className="w-full py-4 rounded-xl bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#997A15] text-white font-black text-sm shadow-gold-md hover:brightness-105 transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  <span>Proceed to UPI Payment</span>
+                  <span>
+                    {selectedIds.length < 10
+                      ? `Select 10 Creators First (${selectedIds.length}/10)`
+                      : !budgetUnlocked
+                      ? "Check Budget First"
+                      : "Proceed to UPI Payment"}
+                  </span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </form>

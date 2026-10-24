@@ -8,6 +8,9 @@ export interface IUser extends Document {
   phone?: string;
   avatar?: string;
   is2FAEnabled: boolean;
+  isEmailVerified?: boolean;
+  emailVerificationToken?: string | null;
+  emailVerificationExpires?: Date | null;
   otpCode?: string;
   otpExpiresAt?: Date;
   status: "active" | "inactive" | "suspended";
@@ -24,6 +27,9 @@ const UserSchema: Schema = new Schema<IUser>(
     phone: { type: String, default: "" },
     avatar: { type: String, default: "" },
     is2FAEnabled: { type: Boolean, default: true },
+    isEmailVerified: { type: Boolean, default: false },
+    emailVerificationToken: { type: String, default: null },
+    emailVerificationExpires: { type: Date, default: null },
     otpCode: { type: String, default: null },
     otpExpiresAt: { type: Date, default: null },
     status: { type: String, enum: ["active", "inactive", "suspended"], default: "active" },

@@ -33,6 +33,8 @@ if (!global.mongooseCache) {
 const cached = global.mongooseCache;
 
 export async function dbConnect() {
+  const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/bh_reels";
+
   if (cached.conn) {
     if (!cached.seeded) {
       await seedDatabaseIfEmpty();
@@ -47,10 +49,11 @@ export async function dbConnect() {
       serverSelectionTimeoutMS: 5000, // 5s timeout
       tls: true,
       tlsAllowInvalidCertificates: true, // Prevents OpenSSL TLS alert 80 rejection on local network proxy / Windows SSL inspection
+      dbName: "bh_reels",
     };
 
     cached.promise = mongoose
-      .connect(MONGODB_URI, opts)
+      .connect(uri, opts)
       .then(async (m) => {
         console.log("MongoDB connected successfully to BH Reels Atlas database.");
         return m;

@@ -21,6 +21,7 @@ import {
   User as UserIcon,
   Mail,
   Phone,
+  MapPin,
   XCircle,
 } from "lucide-react";
 
@@ -28,9 +29,9 @@ export default function ProfilePage() {
   const { user, updateProfile, toggle2FA, getAuthHeaders } = useAuth();
 
   const [profileData, setProfileData] = useState({
-    name: user?.name || "BH Admin",
-    email: user?.email || "admin@bhreels.com",
-    phone: user?.phone || "",
+    name: user?.name || "Chetan Dada",
+    email: user?.email || "no.reply.bhreels@gmail.com",
+    phone: user?.phone || "+91 9779886200, +91 8284814341",
     avatar: user?.avatar || "",
   });
 
@@ -47,13 +48,15 @@ export default function ProfilePage() {
   const [globalSaving, setGlobalSaving] = useState(false);
   const [loaderMsg, setLoaderMsg] = useState("Saving changes...");
   const [uploading, setUploading] = useState(false);
+  const [testEmailLoading, setTestEmailLoading] = useState(false);
+  const [testEmailMsg, setTestEmailMsg] = useState({ type: "", text: "" });
 
   useEffect(() => {
     if (user) {
       setProfileData({
         name: user.name || "",
         email: user.email || "",
-        phone: user.phone || "",
+        phone: user.phone || "+91 9779886200, +91 8284814341",
         avatar: user.avatar || "",
       });
       setIs2FA(user.is2FAEnabled !== false);
@@ -67,6 +70,34 @@ export default function ProfilePage() {
   ) => {
     setter({ type, text });
     setTimeout(() => setter({ type: "", text: "" }), 5000);
+  };
+
+  const handleSendTestEmail = async () => {
+    setTestEmailLoading(true);
+    setTestEmailMsg({ type: "", text: "" });
+    try {
+      const res = await fetch("/api/admin/test-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ to: profileData.email || "no.reply.bhreels@gmail.com" }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setTestEmailMsg({
+          type: "success",
+          text: `Test email sent! Code: ${data.otpCode} (Check your inbox)`,
+        });
+      } else {
+        setTestEmailMsg({
+          type: "error",
+          text: data.error || "Failed to send test email.",
+        });
+      }
+    } catch (err: any) {
+      setTestEmailMsg({ type: "error", text: err.message || "Network error" });
+    } finally {
+      setTestEmailLoading(false);
+    }
   };
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -212,10 +243,14 @@ export default function ProfilePage() {
 
             <div>
               <h2 className="text-xl font-extrabold text-slate-900 flex items-center justify-center gap-1.5">
-                {profileData.name || "BH Admin"} <Sparkles className="w-4 h-4 text-[#B8860B]" />
+                {profileData.name || "Chetan Dada"} <Sparkles className="w-4 h-4 text-[#B8860B]" />
               </h2>
               <p className="text-xs text-[#B8860B] font-mono font-bold mt-0.5">{profileData.email}</p>
-              <p className="text-[11px] text-slate-500 font-medium mt-1">Admin • BS Reels</p>
+              <p className="text-[11px] text-slate-500 font-medium mt-1">Super Admin • BH Reels</p>
+              <p className="text-[10px] text-slate-600 font-medium flex items-center justify-center gap-1 mt-1 text-center">
+                <MapPin className="w-3 h-3 text-[#B8860B] shrink-0" />
+                <span>BH Team Studios, Sec 08, Chandigarh , 160009</span>
+              </p>
             </div>
 
             <label
@@ -278,6 +313,63 @@ export default function ProfilePage() {
               </div>
             )}
           </div>
+
+          {/* Gmail SMTP Status Card */}
+          <div className="bg-white rounded-3xl p-6 space-y-4 border border-slate-200 shadow-sm">
+            <div>
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                  <Mail className="w-4 h-4 text-[#B8860B]" /> Gmail SMTP Service
+                </h3>
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Active
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 font-medium mt-1">
+                Sender: <strong className="text-slate-800">Chetan Dada</strong>
+              </p>
+              <p className="text-[11px] text-slate-500 font-mono mt-0.5">
+                no.reply.bhreels@gmail.com
+              </p>
+            </div>
+
+            <button
+              type="button"
+              disabled={testEmailLoading}
+              onClick={handleSendTestEmail}
+              className="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-[#B38728] via-[#FDF0A6] to-[#AA771C] text-slate-950 text-xs font-bold shadow-sm hover:opacity-95 transition-all disabled:opacity-50"
+            >
+              {testEmailLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
+                  Sending Test Email...
+                </>
+              ) : (
+                <>
+                  <Mail className="w-4 h-4" />
+                  Send Test Verification Email
+                </>
+              )}
+            </button>
+
+            {testEmailMsg.text && (
+              <div
+                className={`p-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+                  testEmailMsg.type === "success"
+                    ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
+                    : "bg-red-50 border border-red-200 text-red-700"
+                }`}
+              >
+                {testEmailMsg.type === "success" ? (
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
+                ) : (
+                  <XCircle className="w-4 h-4 shrink-0 text-red-600" />
+                )}
+                <span>{testEmailMsg.text}</span>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Right Column: Edit Profile + Change Password */}
@@ -327,7 +419,7 @@ export default function ProfilePage() {
                   </label>
                   <input
                     type="text"
-                    placeholder="+91 98765 43210"
+                    placeholder="+91 9779886200, +91 8284814341"
                     value={profileData.phone}
                     onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
                     className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:bg-white focus:border-[#D4AF37]"

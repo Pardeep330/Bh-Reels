@@ -19,21 +19,25 @@ import {
 export default function UserLoginPage() {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2>(1);
-  const [email, setEmail] = useState("admin@bhreels.com");
-  const [password, setPassword] = useState("admin123");
+  const [email, setEmail] = useState("no.reply.bhreels@gmail.com");
+  const [password, setPassword] = useState("Deep@123");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [demoOtp, setDemoOtp] = useState<string | null>("123456");
+  const [unverifiedEmail, setUnverifiedEmail] = useState("");
+  const [resendSuccess, setResendSuccess] = useState("");
+  const [isResendingVerification, setIsResendingVerification] = useState(false);
+  const [resending, setResending] = useState(false);
   const [isAdminLogin, setIsAdminLogin] = useState(false);
 
-  const handleStep1 = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleStep1 = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setError("");
+    setUnverifiedEmail("");
+    setResendSuccess("");
     setLoading(true);
 
     try {
-      // Authenticate against server API
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -43,24 +47,70 @@ export default function UserLoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        // Fallback for demo user client login if not admin
-        if (email !== "admin@bhreels.com") {
-          setIsAdminLogin(false);
-          setStep(2);
-          return;
+        if (data.requiresVerification) {
+          setUnverifiedEmail(email);
         }
         throw new Error(data.error || "Invalid login credentials");
       }
 
-      setIsAdminLogin(true);
-      if (data.demoOtp) {
-        setDemoOtp(data.demoOtp);
+      // If verified regular user, log in immediately
+      if (data.user) {
+        localStorage.setItem("bh_auth_token", data.token);
+        localStorage.setItem("bh_auth_user", JSON.stringify(data.user));
+        localStorage.setItem("bh_public_user", JSON.stringify(data.user));
+        window.dispatchEvent(new Event("bh_auth_change"));
+        router.push("/select-influencers");
+        return;
       }
+
+      setIsAdminLogin(true);
       setStep(2);
     } catch (err: any) {
       setError(err.message || "Sign in failed");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!unverifiedEmail) return;
+    setIsResendingVerification(true);
+    setResendSuccess("");
+    try {
+      const res = await fetch("/api/auth/resend-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: unverifiedEmail }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to resend");
+      setResendSuccess(data.message || "Fresh verification link sent! Please check your inbox.");
+    } catch (e: any) {
+      setError(e.message || "Failed to send link");
+    } finally {
+      setIsResendingVerification(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setResending(true);
+    setError("");
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setOtp(["", "", "", "", "", ""]);
+      } else {
+        setError(data.error || "Failed to resend OTP");
+      }
+    } catch (err: any) {
+      setError(err.message || "Network error");
+    } finally {
+      setResending(false);
     }
   };
 
@@ -76,7 +126,7 @@ export default function UserLoginPage() {
     setLoading(true);
 
     try {
-      if (isAdminLogin || email.toLowerCase() === "admin@bhreels.com") {
+      if (isAdminLogin || email.toLowerCase() === "no.reply.bhreels@gmail.com") {
         const res = await fetch("/api/auth/verify-otp", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -124,11 +174,6 @@ export default function UserLoginPage() {
     }
   };
 
-  const fillDemoOtp = () => {
-    const code = demoOtp || "123456";
-    setOtp(code.split(""));
-  };
-
   return (
     <div className="min-h-[80vh] flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
@@ -152,18 +197,40 @@ export default function UserLoginPage() {
             </div>
           )}
 
-          {step === 2 && demoOtp && (
-            <div className="p-3 rounded-xl bg-amber-50 border border-amber-300 flex items-center justify-between text-xs">
-              <span className="text-amber-900 font-bold flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5 text-amber-600" /> Authenticator Code:
-              </span>
+          {unverifiedEmail && (
+            <div className="p-4 rounded-2xl bg-amber-50 border-2 border-[#D4AF37] space-y-3 text-xs">
+              <div className="flex items-center gap-2 text-amber-900 font-bold">
+                <Mail className="w-4 h-4 text-[#B8860B]" />
+                <span>Verification Link Required</span>
+              </div>
+              <p className="text-slate-600 text-[11px] leading-relaxed">
+                Your account is registered but email has not been confirmed yet. Click the button below to receive a fresh verification link.
+              </p>
+              {resendSuccess && (
+                <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-300 text-emerald-800 text-[11px] font-semibold">
+                  {resendSuccess}
+                </div>
+              )}
               <button
                 type="button"
-                onClick={fillDemoOtp}
-                className="text-xs px-2.5 py-1 rounded bg-amber-200 border border-amber-400 text-amber-950 font-mono font-bold hover:bg-amber-300 transition-colors"
+                onClick={handleResendVerification}
+                disabled={isResendingVerification}
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#B8860B] to-[#997A15] text-white font-extrabold text-xs shadow-gold-sm hover:brightness-105 flex items-center justify-center gap-1.5 disabled:opacity-50"
               >
-                Auto-fill ({demoOtp})
+                <RefreshCw className={`w-3.5 h-3.5 ${isResendingVerification ? "animate-spin" : ""}`} />
+                <span>{isResendingVerification ? "Sending..." : "Resend Verification Link to Email"}</span>
               </button>
+            </div>
+          )}
+
+          {step === 2 && (
+            <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-300 space-y-1 text-xs">
+              <span className="text-amber-900 font-bold flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-[#B8860B]" /> Dynamic OTP Sent
+              </span>
+              <p className="text-slate-600 text-[11px]">
+                A real-time 6-digit code has been delivered to <strong>{email}</strong>. Check your Gmail inbox and spam folder.
+              </p>
             </div>
           )}
 
@@ -243,6 +310,25 @@ export default function UserLoginPage() {
                     />
                   ))}
                 </div>
+              </div>
+
+              <div className="flex items-center justify-between text-xs">
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="text-slate-500 hover:text-slate-900 font-semibold"
+                >
+                  ← Back to Login
+                </button>
+                <button
+                  type="button"
+                  disabled={resending}
+                  onClick={handleResend}
+                  className="text-[#B8860B] font-semibold hover:underline flex items-center gap-1 disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-3 h-3 ${resending ? "animate-spin" : ""}`} />
+                  {resending ? "Sending..." : "Resend OTP via Email"}
+                </button>
               </div>
 
               <button

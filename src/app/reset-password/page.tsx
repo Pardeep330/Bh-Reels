@@ -9,10 +9,10 @@ import { KeyRound, Lock, CheckCircle2, AlertCircle } from "lucide-react";
 function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialEmail = searchParams.get("email") || "admin@bhreels.com";
+  const initialEmail = searchParams.get("email") || "no.reply.bhreels@gmail.com";
 
   const [email, setEmail] = useState(initialEmail);
-  const [otp, setOtp] = useState("123456");
+  const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -81,7 +81,8 @@ function ResetPasswordForm() {
               <input
                 type="text"
                 required
-                placeholder="123456"
+                maxLength={6}
+                placeholder="6-Digit OTP"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
                 className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 font-mono text-center text-base tracking-widest focus:bg-white focus:outline-none focus:border-[#D4AF37]"

@@ -51,9 +51,7 @@ class BHReelsStore {
   private influencers: SeedInfluencer[] = [...INITIAL_INFLUENCERS];
   private users: SeedUser[] = [...INITIAL_USERS];
   private campaigns: SeedCampaign[] = [...EXTENDED_INITIAL_CAMPAIGNS];
-  private activeOtps: Record<string, { code: string; expiresAt: number }> = {
-    "admin@bhreels.com": { code: "123456", expiresAt: Date.now() + 24 * 60 * 60 * 1000 },
-  };
+  private activeOtps: Record<string, { code: string; expiresAt: number }> = {};
 
   // Auth Operations
   getAdmin() {
@@ -66,18 +64,20 @@ class BHReelsStore {
   }
 
   setOtp(email: string, code: string) {
-    const key = email.toLowerCase();
+    const key = email.toLowerCase().trim();
     this.activeOtps[key] = {
       code,
-      expiresAt: Date.now() + 30 * 60 * 1000,
+      expiresAt: Date.now() + 15 * 60 * 1000, // 15 minutes expiry
     };
   }
 
   verifyOtp(email: string, code: string): boolean {
-    const key = email.toLowerCase();
+    const key = email.toLowerCase().trim();
     const record = this.activeOtps[key];
-    if (record && record.code === code) return true;
-    if (code === "123456" || (code.length === 6 && /^\d+$/.test(code))) return true;
+    if (record && record.code === code.trim() && record.expiresAt > Date.now()) {
+      delete this.activeOtps[key]; // Invalidate used OTP
+      return true;
+    }
     return false;
   }
 

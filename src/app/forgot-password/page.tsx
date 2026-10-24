@@ -8,7 +8,7 @@ import { Mail, ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin@bhreels.com");
+  const [email, setEmail] = useState("no.reply.bhreels@gmail.com");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ export default function ForgotPasswordPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      setMessage(`Reset OTP code sent! Demo OTP code: ${data.demoOtp || "123456"}`);
+      setMessage(data.message || `Password reset verification code sent to ${email}. Check your inbox.`);
       setTimeout(() => {
         router.push(`/reset-password?email=${encodeURIComponent(email)}`);
       }, 2000);

@@ -24,12 +24,11 @@ export async function POST(req: Request) {
       }
 
       const isStoredOtpValid =
-        user.otpCode === otp && user.otpExpiresAt && new Date(user.otpExpiresAt) > new Date();
-      const isDemoFallbackValid = otp === "123456" || otp === process.env.DEMO_2FA_OTP;
+        user.otpCode === otp.trim() && user.otpExpiresAt && new Date(user.otpExpiresAt) > new Date();
 
-      if (!isStoredOtpValid && !isDemoFallbackValid) {
+      if (!isStoredOtpValid) {
         return NextResponse.json(
-          { error: "Invalid or expired 2FA OTP code. Please check code or try again." },
+          { error: "Invalid or expired 2FA OTP code. Please check your email and enter the code received." },
           { status: 400 }
         );
       }
@@ -75,8 +74,11 @@ export async function POST(req: Request) {
     } else {
       // Resilient fallback mode
       const isValid = store.verifyOtp(cleanEmail, otp);
-      if (!isValid && otp !== "123456") {
-        return NextResponse.json({ error: "Invalid or expired OTP code" }, { status: 400 });
+      if (!isValid) {
+        return NextResponse.json(
+          { error: "Invalid or expired 2FA OTP code. Please check your email and enter the code received." },
+          { status: 400 }
+        );
       }
 
       const admin = store.getAdmin();

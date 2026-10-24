@@ -77,17 +77,22 @@ export const PublicFooter: React.FC = () => {
         <div className="space-y-3">
           <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Head Office</h4>
           <div className="space-y-2 text-[11px] text-slate-600">
-            <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-[#B8860B] shrink-0" />
-              <span>BH Team Studios, BKC, Mumbai, Maharashtra 400051</span>
+            <div className="flex items-start gap-2">
+              <MapPin className="w-4 h-4 text-[#B8860B] shrink-0 mt-0.5" />
+              <span>BH Team Studios, Sec 08, Chandigarh , 160009</span>
             </div>
             <div className="flex items-center gap-2">
               <Mail className="w-4 h-4 text-[#B8860B] shrink-0" />
-              <span>contact@bhreels.com</span>
+              <a href="mailto:bhreels.offical@gmail.com" className="hover:text-[#B8860B] transition-colors">
+                bhreels.offical@gmail.com
+              </a>
             </div>
-            <div className="flex items-center gap-2">
-              <Phone className="w-4 h-4 text-[#B8860B] shrink-0" />
-              <span>+91 98765 43210</span>
+            <div className="flex items-start gap-2">
+              <Phone className="w-4 h-4 text-[#B8860B] shrink-0 mt-0.5" />
+              <div className="flex flex-col">
+                <a href="tel:+919779886200" className="hover:text-[#B8860B] transition-colors">+91 9779886200</a>
+                <a href="tel:+918284814341" className="hover:text-[#B8860B] transition-colors">+91 8284814341</a>
+              </div>
             </div>
           </div>
         </div>

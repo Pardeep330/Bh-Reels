@@ -1,5 +1,8 @@
 /node_modules
 .next
 .env.local
+.env.locall
 .tsbuildinfo
+*.tsbuildinfo
 .cursor
+scratch

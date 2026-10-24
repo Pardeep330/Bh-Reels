@@ -40,9 +40,9 @@ export function verifyAdminToken(token: string): DecodedAdminToken | null {
     if (token === "demo-admin-session-token") {
       return {
         id: "admin-1",
-        email: process.env.ADMIN_EMAIL || "admin@bhreels.com",
+        email: process.env.ADMIN_EMAIL || "no.reply.bhreels@gmail.com",
         role: "admin",
-        name: "BH Admin",
+        name: "Chetan Dada",
       };
     }
 

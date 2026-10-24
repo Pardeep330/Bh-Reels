@@ -24,18 +24,19 @@ export default function LoginPage() {
   const [step, setStep] = useState<1 | 2>(1);
 
   // Form Inputs
-  const [email, setEmail] = useState("admin@bhreels.com");
-  const [password, setPassword] = useState("admin123");
+  // Form Inputs
+  const [email, setEmail] = useState("no.reply.bhreels@gmail.com");
+  const [password, setPassword] = useState("Deep@123");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
 
   // UI state
   const [error, setError] = useState("");
+  const [infoMsg, setInfoMsg] = useState("");
   const [loading, setLoading] = useState(false);
-  const [demoOtp, setDemoOtp] = useState<string | null>("123456");
-  const [copied, setCopied] = useState(false);
+  const [resending, setResending] = useState(false);
 
-  const handleStep1Login = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleStep1Login = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setError("");
     setLoading(true);
 
@@ -51,14 +52,35 @@ export default function LoginPage() {
         throw new Error(data.error || "Invalid credentials");
       }
 
-      if (data.demoOtp) {
-        setDemoOtp(data.demoOtp);
-      }
+      setInfoMsg(data.message || `Dynamic 6-digit verification code sent to ${email}`);
       setStep(2);
     } catch (err: any) {
       setError(err.message || "Failed to sign in");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    setResending(true);
+    setError("");
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setInfoMsg(`Fresh dynamic OTP sent to ${email}! Check your inbox.`);
+        setOtp(["", "", "", "", "", ""]);
+      } else {
+        setError(data.error || "Failed to resend code");
+      }
+    } catch (err: any) {
+      setError(err.message || "Network error while resending");
+    } finally {
+      setResending(false);
     }
   };
 
@@ -81,32 +103,16 @@ export default function LoginPage() {
       });
 
       const data = await res.json();
-      const token = data.token || `bh_reels_session_${Date.now()}`;
-      const adminUser = data.admin || {
-        id: "admin-1",
-        name: "BH Admin",
-        email: "admin@bhreels.com",
-        role: "admin",
-        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300",
-      };
+      if (!res.ok) {
+        throw new Error(data.error || "Invalid OTP code. Please enter the dynamic 6-digit code received on your email.");
+      }
 
-      localStorage.setItem("bh_auth_token", token);
-      localStorage.setItem("bh_auth_user", JSON.stringify(adminUser));
+      localStorage.setItem("bh_auth_token", data.token);
+      localStorage.setItem("bh_auth_user", JSON.stringify(data.admin));
       window.dispatchEvent(new Event("bh_auth_change"));
       router.push("/admin/dashboard");
     } catch (err: any) {
-      // Direct session fallback for smooth demo testing
-      const defaultAdmin = {
-        id: "admin-1",
-        name: "BH Admin",
-        email: "admin@bhreels.com",
-        role: "admin",
-        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300",
-      };
-      localStorage.setItem("bh_auth_token", "demo-admin-session-token");
-      localStorage.setItem("bh_auth_user", JSON.stringify(defaultAdmin));
-      window.dispatchEvent(new Event("bh_auth_change"));
-      router.push("/admin/dashboard");
+      setError(err.message || "Failed to verify OTP");
     } finally {
       setLoading(false);
     }
@@ -130,13 +136,6 @@ export default function LoginPage() {
       const prevInput = document.getElementById(`otp-input-${index - 1}`);
       prevInput?.focus();
     }
-  };
-
-  const fillDemoOtp = () => {
-    const code = demoOtp || "123456";
-    setOtp(code.split(""));
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -182,32 +181,20 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Demo Credentials & OTP Helper Banner */}
-          <div className="p-3.5 rounded-2xl bg-amber-50/60 border border-[#D4AF37]/30 space-y-1.5 text-xs">
-            <div className="flex items-center justify-between text-[#B8860B] font-bold">
-              <span className="flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5" /> Demo Login Credentials
-              </span>
-              {step === 2 && demoOtp && (
-                <button
-                  type="button"
-                  onClick={fillDemoOtp}
-                  className="text-[10px] px-2 py-0.5 rounded bg-[#D4AF37]/20 border border-[#D4AF37]/40 hover:bg-[#D4AF37]/30 text-[#B8860B] flex items-center gap-1 font-mono font-bold"
-                >
-                  {copied ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-                  Auto-fill OTP ({demoOtp})
-                </button>
-              )}
+          {/* Security Notice Banner */}
+          <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-[#D4AF37]/40 space-y-1 text-xs">
+            <div className="flex items-center gap-1.5 text-[#B8860B] font-bold">
+              <ShieldCheck className="w-4 h-4 text-[#B8860B]" />
+              <span>{step === 1 ? "Super Admin Portal" : "Dynamic OTP Dispatched"}</span>
             </div>
             {step === 1 ? (
-              <div className="text-slate-600 text-[11px] font-mono leading-tight">
-                Email: <span className="text-slate-900 font-bold">admin@bhreels.com</span> | Pass:{" "}
-                <span className="text-slate-900 font-bold">admin123</span>
-              </div>
+              <p className="text-slate-600 text-[11px] leading-relaxed">
+                Super Admin: <span className="font-mono font-bold text-slate-800">no.reply.bhreels@gmail.com</span>. A dynamic 6-digit OTP will be sent directly to your Gmail inbox.
+              </p>
             ) : (
-              <div className="text-slate-600 text-[11px] leading-tight">
-                Active 6-digit OTP: <span className="font-mono text-[#B8860B] font-extrabold">{demoOtp || "123456"}</span>
-              </div>
+              <p className="text-slate-600 text-[11px] leading-relaxed">
+                {infoMsg || `A real-time 6-digit verification code was emailed to ${email}. Check your Gmail inbox and spam folder.`}
+              </p>
             )}
           </div>
 
@@ -297,10 +284,12 @@ export default function LoginPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={fillDemoOtp}
-                  className="text-[#B8860B] font-semibold hover:underline flex items-center gap-1"
+                  disabled={resending}
+                  onClick={handleResendOtp}
+                  className="text-[#B8860B] font-semibold hover:underline flex items-center gap-1 disabled:opacity-50"
                 >
-                  <RefreshCw className="w-3 h-3" /> Fill Demo Code ({demoOtp})
+                  <RefreshCw className={`w-3 h-3 ${resending ? "animate-spin" : ""}`} />
+                  {resending ? "Resending..." : "Resend OTP via Email"}
                 </button>
               </div>
 
